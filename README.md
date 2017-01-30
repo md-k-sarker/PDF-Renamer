@@ -1,6 +1,6 @@
 ### PDF-Renamer
 
-<b>Rename pdf file<b>
+
 ####Requirements
 
 The product will rename the PDF files within a folder by extracting the below information from within the PDF file.
