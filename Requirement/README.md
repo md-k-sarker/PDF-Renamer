@@ -5,7 +5,9 @@
 
 This application will rename the PDF files within a folder by extracting the certain information from within the PDF file.
 
-#####Full requiremnt is written in Requirements_vx.x.x_team_of_3.pdf.  
+#####Full requirement is written in Requirements_vx.x.x_team_of_3.pdf.  
+#####Latest version of requirement document: v0.0.4
+#####Direct link of latest requirement document https://github.com/md-k-sarker/PDF-Renamer/blob/master/Requirement/Requirements_v0.0.4_team_of_3.pdf
 
 ####Summary of Requirements
 
