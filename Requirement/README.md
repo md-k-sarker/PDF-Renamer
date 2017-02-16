@@ -3,7 +3,11 @@
 
 ####Requirements
 
-The product will rename the PDF files within a folder by extracting the below information from within the PDF file.
+This application will rename the PDF files within a folder by extracting the certain information from within the PDF file.
+
+#####Full requiremnt is written in Requirements_vx.x.x_team_of_3.pdf.  
+
+####Summary of Requirements
 
 <ol>
 <li> The subject classification. </li>
