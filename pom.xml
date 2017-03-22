@@ -2,112 +2,86 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Wright</groupId>
-	<artifactId>Renamer</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>pdfRenamer</artifactId>
+	<name>pdfRenamer</name>
+	<version>0.0.1</version>
 
 
-	<repositories>
-		<repository>
-			<id>itext</id>
-			<name>iText Repository - releases</name>
-			<url>https://repo.itextsupport.com/releases</url>
-		</repository>
-	</repositories>
+	<packaging>jar</packaging>
+
 
 	<dependencies>
 
 		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>barcodes</artifactId>
-			<version>7.0.1</version>
-			<!-- barcodes depends on kernel -->
+			<groupId>org.apache.pdfbox</groupId>
+			<artifactId>pdfbox</artifactId>
+			<version>2.0.4</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>font-asian</artifactId>
-			<version>7.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>forms</artifactId>
-			<version>7.0.1</version>
-			<!-- forms depends on kernel and layout -->
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>hyph</artifactId>
-			<version>7.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>io</artifactId>
-			<version>7.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>kernel</artifactId>
-			<version>7.0.1</version>
-			<!-- kernel depends on io -->
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>layout</artifactId>
-			<version>7.0.1</version>
-			<!-- layout depends on kernel -->
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>pdfa</artifactId>
-			<version>7.0.1</version>
-			<!-- pdfa depends on kernel -->
-		</dependency>
-
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>sign</artifactId>
-			<version>7.0.1</version>
-			<!-- sign depends on kernel, layout and forms -->
-		</dependency>
-
-		<!-- pdfSweep -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>cleanup</artifactId>
-			<version>1.0.1</version>
-			<!-- sign depends on io, kernel, layout and itext-licensekey -->
-		</dependency>
-
-		<!-- pdfCalligraph -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>typography</artifactId>
-			<version>1.0.1</version>
-			<!-- typography depends on io, layout and itext-licensekey -->
-		</dependency>
-
-		<!-- pdfInvoice -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>zugferd</artifactId>
-			<version>1.0.1</version>
-			<!-- zugferd depends on io, layout, pdfa and itext-licensekey -->
-		</dependency>
-
-		<!-- iText 7 License Key Library -->
-		<dependency>
-			<groupId>com.itextpdf</groupId>
-			<artifactId>itext-licensekey</artifactId>
-			<version>2.0.2</version>
-		</dependency>
 
 	</dependencies>
+
+	<build>
+
+		<finalName>pdfRenamer</finalName>
+		<plugins>
+
+			<!-- download source code in Eclipse -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>false</downloadJavadocs>
+				</configuration>
+			</plugin>
+
+			<!-- Set a JDK compiler level -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+
+			<!-- Make Uber Jar and executable Jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration></configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								add Main-Class to manifest file
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>edu.wright.cs.pdfRenamer</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- maven-jar-plugin -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
+				<configuration> Do not include log4j.properties file in the Jar <excludes> 
+				<exclude>**/log4j.properties</exclude> </excludes> <archive> <manifest> <mainClass>edu.wright.cs.pdfRenamer</mainClass> 
+				</manifest> </archive> </configuration> </plugin> -->
+
+		</plugins>
+	</build>
 
 
 </project>
