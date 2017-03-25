@@ -100,7 +100,7 @@ public class pdfRenamer {
 			}
 
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			//ex.printStackTrace();
 		}
 	}
 
