@@ -1,13 +1,13 @@
 package edu.wright.cs;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 
 import org.slf4j.LoggerFactory;
 
 import edu.wright.cs.cermine.CerminePdf;
 import edu.wright.cs.itext.ITextPdf;
-import edu.wright.cs.util.Constants;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
 import pl.edu.icm.cermine.tools.timeout.TimeoutException;
@@ -40,15 +40,11 @@ public class pdfRenamer {
 		logger.debug("extractPageRange() starts");
 		String fP = metadata.getFirstPage();
 		String lP = metadata.getLastPage();
+		logger.debug("first: " + fP + " last: " + lP);
 		if (fP != null && lP != null) {
-			int firstPage = Integer.valueOf(metadata.getFirstPage());
-			int lastPage = Integer.valueOf(metadata.getLastPage());
-			logger.debug("first: " + firstPage + " last: " + lastPage + "  total: " + iTextPdf.getTotalPage());
-			if (lastPage - firstPage == iTextPdf.getTotalPage())
-				System.out.println("Page Range: " + firstPage + "-" + lastPage);
-			else {
-				System.out.println("Page Range: not found.");
-			}
+			System.out.println("Page Range: " + fP + "-" + lP);
+		} else {
+			System.out.println("Page Range: not found.");
 		}
 		logger.debug("extractPageRange() ends");
 
@@ -57,8 +53,11 @@ public class pdfRenamer {
 	private static void extractLocation() {
 		logger.debug("extractLocation() starts");
 		iTextPdf.selectProbaleTextForLocation();
+		/*
+		 * to-do need to fix it
+		 */
+		// iTextPdf.verifyProbableLocation();
 
-		iTextPdf.verifyProbableLocation();
 		String location = iTextPdf.extractLocationFromProbableLines();
 		if (location.length() > 1)
 			System.out.println("Location: " + location);
@@ -74,7 +73,6 @@ public class pdfRenamer {
 		metadata = cerminePdf.getMetadata();
 
 		iTextPdf = new ITextPdf(path, metadata.getAuthors());
-		iTextPdf.extractLocationFromProbableLines();
 
 		extractPageRange();
 		extractLocation();
@@ -82,28 +80,28 @@ public class pdfRenamer {
 	}
 
 	public static void main(String[] args) {
-		try {
-			startProcessing(Constants.testPdfName);
-		} catch (Exception e) {
-
-		}
 		// try {
-		// appRunDir = System.getProperty("user.dir");
-		// if (args.length == 0) {
-		// System.out.println(fileNotGiven);
-		// printHelp();
-		// } else if (args.length == 1) {
-		// if (args[0].endsWith(".pdf")) {
-		// Path path = java.nio.file.Paths.get(args[0]).toAbsolutePath();
-		// startProcessing(path);
-		// } else {
-		// System.out.println(fileNotPdf);
-		// }
-		// }
-		//
+		// startProcessing(Constants.testPdfName);
 		// } catch (Exception ex) {
-		//
+		// ex.printStackTrace();
 		// }
+		try {
+			appRunDir = System.getProperty("user.dir");
+			if (args.length == 0) {
+				System.out.println(fileNotGiven);
+				printHelp();
+			} else if (args.length == 1) {
+				if (args[0].endsWith(".pdf")) {
+					Path path = java.nio.file.Paths.get(args[0]).toAbsolutePath();
+					startProcessing(path.toString());
+				} else {
+					System.out.println(fileNotPdf);
+				}
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 }

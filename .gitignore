@@ -19,6 +19,12 @@ DebugMaven
 
 #Maven
 /target
+dependency-reduced-pom.xml
+
+#Test Resources
+/src/main/resources/pdfs
+/testpdfs
+/jar
 
 # External tool builders
 .externalToolBuilders/
