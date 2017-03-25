@@ -1,5 +1,6 @@
 package edu.wright.cs;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,11 +39,22 @@ public class pdfRenamer {
 	}
 
 	private static void extractLocation(String fileName) {
+//		CerminePdf cPdf = new CerminePdf(fileName);
+//		cPdf.getMetadata();
 
 	}
 
 	private static void startProcessing() {
 		for (String fileName : nameToDir.keySet()) {
+			PdfText pdfText = new PdfText(new File(fileName));
+			String text;
+			try {
+				text = pdfText.getFullText();
+				System.out.println(text);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			extractPageRange(fileName);
 			extractLocation(fileName);
 		}
@@ -82,55 +94,60 @@ public class pdfRenamer {
 
 	public static void main(String[] args) throws IOException {
 
-		appRunDir = System.getProperty("user.dir");
+		try {
 
-		if (args.length == 0) {
-			System.out.println(flagAndFileNotGiven);
-			printHelp();
-		} else {
-			init();
-			if (args[0].equals("-f") || args.equals("-F")) {
-				isDirectory = false;
+			appRunDir = System.getProperty("user.dir");
 
-				if (args.length == 1) {
-					System.out.println(fileNotGiven);
-					printHelp();
-				} else {
-					storeFileNames(args);
+			if (args.length == 0) {
+				System.out.println(flagAndFileNotGiven);
+				printHelp();
+			} else {
+				init();
+				if (args[0].equals("-f") || args.equals("-F")) {
+					isDirectory = false;
 
-					if (!nameToDir.isEmpty()) {
-						startProcessing();
-					} else {
+					if (args.length == 1) {
 						System.out.println(fileNotGiven);
 						printHelp();
-					}
-				}
-
-			} else if (args[0].equals("-d") || args.equals("-D")) {
-				isDirectory = true;
-				if (args.length == 1) {
-					System.out.println(dirNotGiven);
-					printHelp();
-				} else if (args.length == 2) {
-					fileDir = args[1];
-					fileDir = java.nio.file.Paths.get(fileDir).toAbsolutePath().toString();
-					storeFileNames(args);
-
-					if (!nameToDir.isEmpty()) {
-						startProcessing();
 					} else {
-						System.out.println(dirNotContainPdf);
+						storeFileNames(args);
+
+						if (!nameToDir.isEmpty()) {
+							startProcessing();
+						} else {
+							System.out.println(fileNotGiven);
+							printHelp();
+						}
+					}
+
+				} else if (args[0].equals("-d") || args.equals("-D")) {
+					isDirectory = true;
+					if (args.length == 1) {
+						System.out.println(dirNotGiven);
+						printHelp();
+					} else if (args.length == 2) {
+						fileDir = args[1];
+						fileDir = java.nio.file.Paths.get(fileDir).toAbsolutePath().toString();
+						storeFileNames(args);
+
+						if (!nameToDir.isEmpty()) {
+							startProcessing();
+						} else {
+							System.out.println(dirNotContainPdf);
+							printHelp();
+						}
+					} else if (args.length > 2) {
+						System.out.println(multipleDirGiven);
 						printHelp();
 					}
-				} else if (args.length > 2) {
-					System.out.println(multipleDirGiven);
+
+				} else {
+					System.out.println(flagNotGiven);
 					printHelp();
 				}
 
-			} else {
-				System.out.println(flagNotGiven);
-				printHelp();
 			}
+		} catch (Exception ex) {
 
 		}
 	}
