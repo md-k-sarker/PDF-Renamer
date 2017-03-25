@@ -1,14 +1,10 @@
 package edu.wright.cs.itext;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Stream;
 
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +19,9 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 
 import edu.wright.cs.cermine.CerminePdf;
 import edu.wright.cs.util.Constants;
+import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentAuthor;
+import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
 public class ITextPdf {
 
@@ -59,6 +57,13 @@ public class ITextPdf {
 			lines.put(lineNo, s);
 			lineNo++;
 		}
+	}
+
+	public int getTotalPage() {
+		if (pdfReader != null) {
+			return pdfReader.getNumberOfPages();
+		}
+		return 0;
 	}
 
 	public void selectProbaleTextForLocation() {
@@ -135,52 +140,91 @@ public class ITextPdf {
 	}
 
 	public String extractLocationFromProbableLines() {
+		String location = "";
+		String city = "";
+		boolean shouldStop = false;
 		if (this.probableLocationLines != null && !this.probableLocationLines.isEmpty()) {
-				
-			for (Locale country : locale) {
+			for (int lineNo : this.probableLocationLines.keySet()) {
 
+				String[] split = this.probableLocationLines.get(lineNo).split("[\\s,]+");
+				for (Locale country : locale) {
+					for (int i = 0; i < split.length; i++) {
+						if (split[i].equals(country.getDisplayCountry())) {
+							shouldStop = true;
+
+							if (i - 1 >= 0) {
+								city = split[i - 1];
+							}
+							if (city.length() > 1) {
+								location = city + ", " + split[i];
+							} else {
+								location = split[i];
+							}
+							break;
+						}
+					}
+				}
+
+				if (shouldStop)
+					break;
 			}
 		}
-		return "";
+		return location;
+
 	}
 
 	/*
 	 * Only for test
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AnalysisException, IOException, TimeoutException {
+		ITextPdf pdf;
+		CerminePdf cPdf;
+		cPdf = new CerminePdf(Constants.testPdfName);
+		pdf = new ITextPdf(Constants.testPdfName, cPdf.getMetadata().getAuthors());
+		pdf.selectProbaleTextForLocation();
 
-		try (Stream<Path> paths = Files.walk(Paths.get(Constants.testFileDir))) {
-			paths.forEach(filePath -> {
-				if (Files.isRegularFile(filePath)) {
+		pdf.verifyProbableLocation();
+		String location = pdf.extractLocationFromProbableLines();
+		logger.debug("Location: " + location);
+		// for (int i : pdf.getProbableLocation().keySet()) {
+		// logger.debug("Line: " + i + " \tText: " +
+		// pdf.getProbableLocation().get(i));
+		// }
 
-					if (filePath.toString().endsWith(".pdf")) {
-
-						ITextPdf pdf;
-						CerminePdf cPdf;
-						try {
-							cPdf = new CerminePdf(filePath.toString());
-							pdf = new ITextPdf(filePath.toString(), cPdf.getMetadata().getAuthors());
-							pdf.selectProbaleTextForLocation();
-
-							pdf.verifyProbableLocation();
-
-							for (int i : pdf.getProbableLocation().keySet()) {
-								logger.debug("Line: " + i + " \tText: " + pdf.getProbableLocation().get(i));
-							}
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					} else {
-						System.out.println(filePath.getFileName().toString() + " not a pdf file.");
-					}
-				}
-
-			});
-		} catch (Exception ex) {
-
-		}
+		// try (Stream<Path> paths =
+		// Files.walk(Paths.get(Constants.testFileDir))) {
+		// paths.forEach(filePath -> {
+		// if (Files.isRegularFile(filePath)) {
+		//
+		// if (filePath.toString().endsWith(".pdf")) {
+		//
+		// try {
+		// cPdf = new CerminePdf(filePath.toString());
+		// pdf = new ITextPdf(filePath.toString(),
+		// cPdf.getMetadata().getAuthors());
+		// pdf.selectProbaleTextForLocation();
+		//
+		// pdf.verifyProbableLocation();
+		//
+		// for (int i : pdf.getProbableLocation().keySet()) {
+		// logger.debug("Line: " + i + " \tText: " +
+		// pdf.getProbableLocation().get(i));
+		// }
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// // e.printStackTrace();
+		// }
+		//
+		// } else {
+		// System.out.println(filePath.getFileName().toString() + " not a pdf
+		// file.");
+		// }
+		// }
+		//
+		// });
+		// } catch (Exception ex) {
+		//
+		// }
 	}
 
 }

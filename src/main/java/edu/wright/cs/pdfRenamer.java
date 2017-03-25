@@ -1,155 +1,109 @@
 package edu.wright.cs;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.stream.Stream;
+
+import org.slf4j.LoggerFactory;
+
+import edu.wright.cs.cermine.CerminePdf;
+import edu.wright.cs.itext.ITextPdf;
+import edu.wright.cs.util.Constants;
+import pl.edu.icm.cermine.exception.AnalysisException;
+import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
+import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
 public class pdfRenamer {
 
+	private static org.slf4j.Logger logger = LoggerFactory.getLogger(pdfRenamer.class);
 	private static boolean isDirectory = false;
 	private static String flagAndFileNotGiven = "Flag and Input file/directory is not specified.";
-	private static String fileNotGiven = "Input file/directory is not specified.";
+	private static String fileNotGiven = "Input file is not specified.";
 	private static String dirNotGiven = "Input directory is not specified.";
 	private static String multipleDirGiven = "Multiple directory is not permitted.";
 	private static String flagNotGiven = "Input flag is not specified.";
 	private static String appRunDir = "";
 	private static String fileDir = "";
 	private static String dirNotContainPdf = "Directory does not have any pdf file.";
+	private static String fileNotPdf = "File is not pdf";
 
 	// private static ArrayList<String> fileNames;
 	private static HashMap<String, String> nameToDir;
+	private static ITextPdf iTextPdf;
+	private static CerminePdf cerminePdf;
+	private static DocumentMetadata metadata;
 
 	private static void printHelp() {
-		System.out.println("Commands:  pdfRenamer -flag Name");
-		System.out.println("\t-flag: indicates file or directory.");
-		System.out.println("\t	-f: indicates file ");
-		System.out.println(
-				"\t	-d: indicates directory. Will do batch operation to all files with .pdf extension. \n\t\t    Will not search recursively for inner directory.");
-		System.out.println("\tName: Name of directory or file.");
-		System.out.println("\t\tMultiple file name seperated by space can be given.");
-		System.out.println("\t\tMultiple directory name is not permitted.");
+		System.out.println("Commands: java -jar PageRangeLocation.jar PdfFile");
 	}
 
-	private static void extractPageRange(String fileName) {
-
-	}
-
-	private static void extractLocation(String fileName) {
-//		CerminePdf cPdf = new CerminePdf(fileName);
-//		cPdf.getMetadata();
-
-	}
-
-	private static void startProcessing() {
-		for (String fileName : nameToDir.keySet()) {
-			PdfText pdfText = new PdfText(new File(fileName));
-			String text;
-			try {
-				text = pdfText.getFullText();
-				System.out.println(text);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			extractPageRange(fileName);
-			extractLocation(fileName);
-		}
-	}
-
-	private static void storeFileNames(String[] args) throws IOException {
-		if (isDirectory == true) {
-			try (Stream<Path> paths = Files.walk(Paths.get(fileDir))) {
-				paths.forEach(filePath -> {
-					if (Files.isRegularFile(filePath)) {
-
-						if (filePath.toString().endsWith(".pdf")) {
-							nameToDir.put(filePath.getFileName().toString(), filePath.toString());
-						} else {
-							System.out.println(filePath.getFileName().toString() + " not a pdf file.");
-						}
-					}
-
-				});
-			}
-		} else {
-			for (int i = 1; i < args.length; i++) {
-				if (args[i].endsWith(".pdf")) {
-					Path path = java.nio.file.Paths.get(args[i]).toAbsolutePath();
-					nameToDir.put(path.getFileName().toString(), path.toString());
-				} else {
-					System.out.println(args[i] + " not a pdf file.");
-				}
+	private static void extractPageRange() {
+		logger.debug("extractPageRange() starts");
+		String fP = metadata.getFirstPage();
+		String lP = metadata.getLastPage();
+		if (fP != null && lP != null) {
+			int firstPage = Integer.valueOf(metadata.getFirstPage());
+			int lastPage = Integer.valueOf(metadata.getLastPage());
+			logger.debug("first: " + firstPage + " last: " + lastPage + "  total: " + iTextPdf.getTotalPage());
+			if (lastPage - firstPage == iTextPdf.getTotalPage())
+				System.out.println("Page Range: " + firstPage + "-" + lastPage);
+			else {
+				System.out.println("Page Range: not found.");
 			}
 		}
+		logger.debug("extractPageRange() ends");
+
 	}
 
-	private static void init() {
-		// fileNames = new ArrayList<String>();
-		nameToDir = new HashMap<String, String>();
+	private static void extractLocation() {
+		logger.debug("extractLocation() starts");
+		iTextPdf.selectProbaleTextForLocation();
+
+		iTextPdf.verifyProbableLocation();
+		String location = iTextPdf.extractLocationFromProbableLines();
+		if (location.length() > 1)
+			System.out.println("Location: " + location);
+		else {
+			System.out.println("Location: not found.");
+		}
+		logger.debug("extractLocation() ends");
 	}
 
-	public static void main(String[] args) throws IOException {
+	private static void startProcessing(String path) throws AnalysisException, IOException, TimeoutException {
+		logger.debug("startProcessing() starts");
+		cerminePdf = new CerminePdf(path);
+		metadata = cerminePdf.getMetadata();
 
+		iTextPdf = new ITextPdf(path, metadata.getAuthors());
+		iTextPdf.extractLocationFromProbableLines();
+
+		extractPageRange();
+		extractLocation();
+		logger.debug("startProcessing() ends");
+	}
+
+	public static void main(String[] args) {
 		try {
-
-			appRunDir = System.getProperty("user.dir");
-
-			if (args.length == 0) {
-				System.out.println(flagAndFileNotGiven);
-				printHelp();
-			} else {
-				init();
-				if (args[0].equals("-f") || args.equals("-F")) {
-					isDirectory = false;
-
-					if (args.length == 1) {
-						System.out.println(fileNotGiven);
-						printHelp();
-					} else {
-						storeFileNames(args);
-
-						if (!nameToDir.isEmpty()) {
-							startProcessing();
-						} else {
-							System.out.println(fileNotGiven);
-							printHelp();
-						}
-					}
-
-				} else if (args[0].equals("-d") || args.equals("-D")) {
-					isDirectory = true;
-					if (args.length == 1) {
-						System.out.println(dirNotGiven);
-						printHelp();
-					} else if (args.length == 2) {
-						fileDir = args[1];
-						fileDir = java.nio.file.Paths.get(fileDir).toAbsolutePath().toString();
-						storeFileNames(args);
-
-						if (!nameToDir.isEmpty()) {
-							startProcessing();
-						} else {
-							System.out.println(dirNotContainPdf);
-							printHelp();
-						}
-					} else if (args.length > 2) {
-						System.out.println(multipleDirGiven);
-						printHelp();
-					}
-
-				} else {
-					System.out.println(flagNotGiven);
-					printHelp();
-				}
-
-			}
-		} catch (Exception ex) {
+			startProcessing(Constants.testPdfName);
+		} catch (Exception e) {
 
 		}
+		// try {
+		// appRunDir = System.getProperty("user.dir");
+		// if (args.length == 0) {
+		// System.out.println(fileNotGiven);
+		// printHelp();
+		// } else if (args.length == 1) {
+		// if (args[0].endsWith(".pdf")) {
+		// Path path = java.nio.file.Paths.get(args[0]).toAbsolutePath();
+		// startProcessing(path);
+		// } else {
+		// System.out.println(fileNotPdf);
+		// }
+		// }
+		//
+		// } catch (Exception ex) {
+		//
+		// }
 	}
 
 }

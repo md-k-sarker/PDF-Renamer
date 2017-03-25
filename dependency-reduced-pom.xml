@@ -3,10 +3,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>Wright</groupId>
   <artifactId>pdfRenamer</artifactId>
-  <name>pdfRenamer</name>
+  <name>PageRangeLocation</name>
   <version>0.0.1</version>
   <build>
-    <finalName>pdfRenamer</finalName>
+    <finalName>PageRangeLocation</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>

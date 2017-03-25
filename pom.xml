@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>Wright</groupId>
 	<artifactId>pdfRenamer</artifactId>
-	<name>pdfRenamer</name>
+	<name>PageRangeLocation</name>
 	<version>0.0.1</version>
 
 
@@ -11,12 +11,6 @@
 
 
 	<dependencies>
-
-		<!-- PdfBox dependency -->
-		<!-- <dependency> <groupId>org.apache.pdfbox</groupId> <artifactId>pdfbox</artifactId> 
-			<version>2.0.4</version> </dependency> -->
-
-
 		<!-- Cermine Dependency -->
 		<dependency>
 			<groupId>pl.edu.icm.cermine</groupId>
@@ -33,7 +27,7 @@
 
 	<build>
 
-		<finalName>pdfRenamer</finalName>
+		<finalName>PageRangeLocation</finalName>
 		<plugins>
 
 			<!-- download source code in Eclipse -->
@@ -83,12 +77,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-			<!-- maven-jar-plugin -->
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-jar-plugin</artifactId> 
-				<configuration> Do not include log4j.properties file in the Jar <excludes> 
-				<exclude>**/log4j.properties</exclude> </excludes> <archive> <manifest> <mainClass>edu.wright.cs.pdfRenamer</mainClass> 
-				</manifest> </archive> </configuration> </plugin> -->
 
 		</plugins>
 
