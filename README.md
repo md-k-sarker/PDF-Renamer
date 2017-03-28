@@ -4,14 +4,17 @@
 
 
 ###Functionality:
+
 This jar extracts page range and location of a research paper. 
 
 ###Executable Jar:
+
 Direct download link: 
 <a href="https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.0.0/PageRangeLocation.jar" title="PageRangeLocation"> https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.0.0/PageRangeLocation.jar </a>
 
 
 ###How to run
+
 Run jar with the following cmd: 
 
 java -jar PageRangeLocation.jar path/to/your/pdf
