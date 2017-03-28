@@ -1,7 +1,6 @@
 ### PDF-Renamer
 
-<a href="http://cecs.wright.edu/~pmateti/Courses/7140/Projects/7140-2017-spring-project.html
-" title="Project">Course project</a> of Advanced Software Engineering course <a http://cecs.wright.edu/~pmateti/Courses/7140/Top/index.html" title="Requirements"> Advanced Software Engineering</a> at Wright State University. 
+<a href="http://cecs.wright.edu/~pmateti/Courses/7140/Projects/7140-2017-spring-project.html" title="Course project">Course project</a> of Advanced Software Engineering course <a href="http://cecs.wright.edu/~pmateti/Courses/7140/Top/index.html" title="Advanced Software Engineering"> Advanced Software Engineering</a> at Wright State University. 
 
 
 ###Functionality:
