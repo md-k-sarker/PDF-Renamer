@@ -1,14 +1,28 @@
 ### PDF-Renamer
 
-The product should rename the PDF files within a folder by extracting certain information from within the PDF file.
+<a href="http://cecs.wright.edu/~pmateti/Courses/7140/Projects/7140-2017-spring-project.html
+" title="Project">Course project</a> of Advanced Software Engineering course <a http://cecs.wright.edu/~pmateti/Courses/7140/Top/index.html" title="Requirements"> Advanced Software Engineering</a> at Wright State University. 
 
 
-####Requirements document is located in <a href="https://github.com/md-k-sarker/PDF-Renamer/tree/master/Requirement" title="Requirements"> Requirement</a> directory.
+###Functionality:
+This jar extracts page range and location of a research paper. 
 
-####Sample test pdfs are located in <a href="https://github.com/md-k-sarker/PDF-Renamer/tree/master/TestDocument" title="TestDocument"> TestDocument</a> directory.
+###Executable Jar:
+Direct download link: 
+<a href="https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.0.0/PageRangeLocation.jar" title="PageRangeLocation"> https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.0.0/PageRangeLocation.jar </a>
 
-###Download
-<a href="https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.0.0/PageRangeLocation.jar" title="PageRangeLocation"> PageRangeLocation</a>
+
+###How to run
+Run jar with the following cmd: 
+
+java -jar PageRangeLocation.jar path/to/your/pdf
+
+
+####Requirements document is located in <a href="https://github.com/md-k-sarker/PDF-Renamer/tree/master/requirement" title="Requirements"> Requirement</a> directory.
+
+####Sample test pdfs are located in <a href="https://github.com/md-k-sarker/PDF-Renamer/tree/master/testdocuments" title="TestDocument"> TestDocument</a> directory.
+
+
 
 
 
