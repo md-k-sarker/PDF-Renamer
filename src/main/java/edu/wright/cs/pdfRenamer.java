@@ -33,6 +33,10 @@ public class pdfRenamer {
 	private static CerminePdf cerminePdf;
 	private static DocumentMetadata metadata;
 
+	private static AuthorIssue authorIssue;
+	private static LocationPageRange locationPageRange;
+	private static PublisherYear publisherYear;
+
 	/**
 	 * Method to print commands and helps
 	 */
@@ -49,55 +53,6 @@ public class pdfRenamer {
 		} else {
 			System.out.println("\nCommands: java -jar PageRangeLocation.jar PdfFile");
 		}
-	}
-
-	/**
-	 * 
-	 */
-	private static void extractPageRange() {
-		logger.debug("extractPageRange() starts");
-		String fP = metadata.getFirstPage();
-		String lP = metadata.getLastPage();
-		logger.debug("first: " + fP + " last: " + lP);
-		if (fP != null && lP != null) {
-			System.out.println("Page Range: " + fP + "-" + lP);
-		} else {
-			System.out.println("Page Range: not found.");
-		}
-		logger.debug("extractPageRange() ends");
-
-	}
-
-	private static void extractLocation() {
-		logger.debug("extractLocation() starts");
-		iTextPdf.selectProbaleTextForLocation();
-		/*
-		 * to-do need to fix it
-		 */
-		// iTextPdf.verifyProbableLocation();
-
-		String location = iTextPdf.extractLocationFromProbableLines();
-		if (location.length() > 1)
-			System.out.println("Location: " + location);
-		else {
-			System.out.println("Location: not found.");
-		}
-		logger.debug("extractLocation() ends");
-	}
-
-	private static void startProcessing(Path path) throws AnalysisException, IOException, TimeoutException {
-
-		logger.debug("startProcessing() starts to process " + path.toString());
-		System.out.println("\n--------Processing " + path);
-		cerminePdf = new CerminePdf(path.toString());
-		metadata = cerminePdf.getMetadata();
-
-		iTextPdf = new ITextPdf(path.toString(), metadata.getAuthors());
-
-		extractPageRange();
-		extractLocation();
-		logger.debug("startProcessing() ends");
-
 	}
 
 	private static void runInSingleMode(String[] args) throws TimeoutException, AnalysisException, IOException {
@@ -177,6 +132,40 @@ public class pdfRenamer {
 		}
 	}
 
+	private static void startProcessing(Path path) throws AnalysisException, IOException, TimeoutException {
+
+		logger.debug("startProcessing() starts to process " + path.toString());
+		System.out.println("\n--------Processing " + path);
+
+		// extract location and pageRange
+		locationPageRange.initialize(path);
+		locationPageRange.extractPageRange();
+		locationPageRange.extractLocation();
+
+		// extract Author and Issue
+		authorIssue.extractAuthors(path.toFile());
+		authorIssue.extractIssueNo(path.toFile());
+
+		// extract Publisher and year
+		publisherYear.initialize(path);
+		String publisher = publisherYear.getPublisher();
+		String year = publisherYear.getYears();
+		System.out.println("Publisher: " + publisher);
+		System.out.println("Year: " + year);
+
+		logger.debug("\n##############Processing() ends#############\n");
+
+	}
+
+	/**
+	 * Will initialize all the constructors and class objects needed
+	 */
+	public static void init() {
+		authorIssue = new AuthorIssue();
+		locationPageRange = new LocationPageRange();
+		publisherYear = new PublisherYear();
+	}
+
 	public static void main(String[] args) {
 
 		for (int i = 0; i < args.length; i++) {
@@ -184,12 +173,15 @@ public class pdfRenamer {
 		}
 
 		try {
+			init();
+
 			if (batchMode) {
 				runInBatchMode(args);
 			} else {
 				runInSingleMode(args);
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 
