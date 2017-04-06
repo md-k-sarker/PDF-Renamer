@@ -80,11 +80,7 @@ public class pdfRenamer {
 	}
 
 	public static void main(String[] args) {
-		// try {
-		// startProcessing(Constants.testPdfName);
-		// } catch (Exception ex) {
-		// ex.printStackTrace();
-		// }
+
 		try {
 			appRunDir = System.getProperty("user.dir");
 			if (args.length == 0) {
@@ -100,7 +96,7 @@ public class pdfRenamer {
 			}
 
 		} catch (Exception ex) {
-			//ex.printStackTrace();
+			// ex.printStackTrace();
 		}
 	}
 

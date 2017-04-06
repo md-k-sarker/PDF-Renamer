@@ -18,7 +18,7 @@ This jar extracts:
 <ol>
  <li>page range </li>
   <li> location </li>
-  </ol>
+ </ol>
 from of a research paper. 
 
 
