@@ -40,7 +40,7 @@ public class PublisherYear {
 	// NOT SURE IF "ACCEPTED" should be included.
 
 	public enum publisherList {
-		IEEE, ACM, ELSEVIER, SPRINGER
+		IEEE, ACM, ELSEVIER, SPRINGER, KLUVER
 	}
 
 	public static boolean isMonthNear(String[] words, int i) {

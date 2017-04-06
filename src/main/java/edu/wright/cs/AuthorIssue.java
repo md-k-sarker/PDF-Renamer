@@ -71,6 +71,7 @@ public class AuthorIssue {
 	 * @return
 	 */
 	private String extractAuthorFromLine(String line) {
+		String author = "";
 		StringBuilder builder = new StringBuilder();
 		String token = null;
 		StringTokenizer tokenizer = new StringTokenizer(line, COMMA_DELIMITER);
@@ -83,7 +84,12 @@ public class AuthorIssue {
 				builder.append(COMMA_DELIMITER);
 			}
 		}
-		return builder.deleteCharAt(builder.length() - 1).toString();
+		try {
+			author = builder.deleteCharAt(builder.length() - 1).toString();
+		} catch (Exception ex) {
+
+		}
+		return author;
 	}
 
 	/**
