@@ -33,6 +33,9 @@ public class pdfRenamer {
 	private static CerminePdf cerminePdf;
 	private static DocumentMetadata metadata;
 
+	/**
+	 * Method to print commands and helps
+	 */
 	private static void printHelp() {
 		if (batchMode) {
 			System.out.println("\nCommands:  pdfRenamer -flag Name");
@@ -48,6 +51,9 @@ public class pdfRenamer {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private static void extractPageRange() {
 		logger.debug("extractPageRange() starts");
 		String fP = metadata.getFirstPage();
@@ -82,7 +88,7 @@ public class pdfRenamer {
 	private static void startProcessing(Path path) throws AnalysisException, IOException, TimeoutException {
 
 		logger.debug("startProcessing() starts to process " + path.toString());
-		System.out.println("\n--------Processing "+path);
+		System.out.println("\n--------Processing " + path);
 		cerminePdf = new CerminePdf(path.toString());
 		metadata = cerminePdf.getMetadata();
 

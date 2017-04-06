@@ -2,6 +2,7 @@
 .metadata
 bin/
 tmp/
+doc/
 *.class
 *.tmp
 *.bak
