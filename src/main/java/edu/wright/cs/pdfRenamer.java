@@ -36,17 +36,26 @@ public class pdfRenamer {
 	private static AuthorIssue authorIssue;
 	private static LocationPageRange locationPageRange;
 	private static PublisherYear publisherYear;
+	private static Rename renamer;
 
 	/**
 	 * Method to print commands and helps
 	 */
 	private static void printHelp() {
 		if (batchMode) {
-			System.out.println("\nCommands:  pdfRenamer -flag Name");
+			System.out.println("\nCommands:  pdfRenamer -flag renameFormat Name");
 			System.out.println("\t   -flag: indicates file or directory.");
 			System.out.println("\t	-f: indicates file ");
 			System.out.println(
 					"\t	-d: indicates directory. Will do batch operation to all files with .pdf extension. \n\t\t    Will not search recursively for inner directory.");
+			System.out.println("\t renameFormat:\n"
+					+ "\t\t  %au - authors.\n"
+					+ "\t\t  %is - issueNo. \n"
+					+ "\t\t  %lo - location.\n"
+					+ "\t\t  %pr - page range.\n"
+					+ "\t\t  %pu - publisher.\n"
+					+ "\t\t  %yr - year.");
+			System.out.println("\t\t  Enter format without spaces in between.");
 			System.out.println("\t    Name: Name of directory or file.");
 			System.out.println("\t\t  Multiple file name seperated by space can be given.");
 			System.out.println("\t\t  Multiple directory name is not permitted.");
@@ -61,9 +70,9 @@ public class pdfRenamer {
 		if (args.length == 0) {
 			System.out.println(fileNotGiven);
 			printHelp();
-		} else if (args.length == 1) {
-			if (args[0].endsWith(".pdf")) {
-				Path path = java.nio.file.Paths.get(args[0]).toAbsolutePath();
+		} else if (args.length == 2) {
+			if (args[1].endsWith(".pdf")) {
+				Path path = java.nio.file.Paths.get(args[1]).toAbsolutePath();
 				startProcessing(path);
 			} else {
 				System.out.println(fileNotPdf);
@@ -81,12 +90,12 @@ public class pdfRenamer {
 			if (args[0].equals("-f") || args[0].equals("-F")) {
 				isDirectory = false;
 
-				if (args.length == 1) {
+				if (args.length <= 2) {
 					System.out.println(fileNotGiven);
 					printHelp();
-				} else if (args.length > 1) {
-
-					for (int i = 1; i < args.length; i++) {
+				} else if (args.length > 2) {
+					renamer.setFormat(args[1]);
+					for (int i = 2; i < args.length; i++) {
 						if (args[i].endsWith(".pdf")) {
 							Path path = java.nio.file.Paths.get(args[i]).toAbsolutePath();
 							startProcessing(path);
@@ -99,13 +108,13 @@ public class pdfRenamer {
 			} else if (args[0].equals("-d") || args[0].equals("-D")) {
 				isDirectory = true;
 
-				if (args.length == 1) {
+				if (args.length <= 2) {
 					System.out.println(dirNotGiven);
 					printHelp();
-				} else if (args.length == 2) {
-					fileDir = args[1];
+				} else if (args.length == 3) {
+					fileDir = args[2];
 					fileDir = java.nio.file.Paths.get(fileDir).toAbsolutePath().toString();
-
+					renamer.setFormat(args[1]);
 					Files.walk(Paths.get(fileDir)).filter(f -> f.toString().endsWith(".pdf")).forEach(f -> {
 						try {
 							logger.debug("#####Processing file: " + f + "  ######");
@@ -136,22 +145,35 @@ public class pdfRenamer {
 
 		logger.debug("startProcessing() starts to process " + path.toString());
 		System.out.println("\n--------Processing " + path);
-
+		renamer.setPath(path);
+		
 		// extract location and pageRange
 		locationPageRange.initialize(path);
-		locationPageRange.extractPageRange();
-		locationPageRange.extractLocation();
+		String pageRange = locationPageRange.extractPageRange();
+		String location = locationPageRange.extractLocation();
+		renamer.setPageRange(pageRange);
+		renamer.setLocation(location);
 
 		// extract Author and Issue
-		authorIssue.extractAuthors(path.toFile());
-		authorIssue.extractIssueNo(path.toFile());
+		//StringBuilder authors = authorIssue.extractAuthors(path.toFile());
+		String issueNo = authorIssue.extractIssueNo(path.toFile());
+		//renamer.setAuthor(authors);
+		renamer.setIssue(issueNo);
 
 		// extract Publisher and year
 		publisherYear.initialize(path);
 		String publisher = publisherYear.getPublisher();
 		String year = publisherYear.getYears();
+		String doi = publisherYear.getDoi();
+		renamer.setPublisher(publisher);
+		renamer.setYear(year);
+		renamer.setDoi(doi);
+		System.out.println("DOI: "+ doi);
 		System.out.println("Publisher: " + publisher);
 		System.out.println("Year: " + year);
+		
+		//Rename file
+		renamer.renameFile();
 
 		logger.debug("\n##############Processing() ends#############\n");
 
@@ -164,6 +186,7 @@ public class pdfRenamer {
 		authorIssue = new AuthorIssue();
 		locationPageRange = new LocationPageRange();
 		publisherYear = new PublisherYear();
+		renamer = new Rename();
 	}
 
 	public static void main(String[] args) {

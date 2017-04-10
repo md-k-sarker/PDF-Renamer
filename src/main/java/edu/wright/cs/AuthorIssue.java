@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.itextpdf.text.Rectangle;
@@ -29,18 +31,22 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 public class AuthorIssue {
 
 	// private static String PDF_FILPATH = "testpdfs";
-	private static String COMMA_DELIMITER = ",";
-	private static String PERIOD_DELIMITER = ".";
-	private static String WHITESPACE_DELIMITER = "#############";
-	private static String ABSTRACT = "Abstract";
+	private static final String COMMA_DELIMITER = ",";
+	private static final String PERIOD_DELIMITER = ".";
+	private static final String WHITESPACE_DELIMITER = "#############";
+	private static final String ABSTRACT = "Abstract";
+	private static final String NOT_APPLICABLE="N/A";
 	private static final String NEW_LINE = "\n";
 	private static final int FIRST_LINE = 1;
 	private static final int START_LINE = 3;
 	private static final int END_LINE = 7;
 	private static final int PAGE_NUMBER = 1;
-
+	private static Pattern pattern = Pattern.compile("([0-9])");
+	private Matcher matcher=null;
+	
 	private static final String[] sanitizeDictionary = { "member", "institute", "technology", "university",
-			"communications", "ieee", "acm", "college", "information", "fellow" };
+			"communications", "ieee", "acm", "college", "information", "fellow", "department", "computer", "science",
+			"@", "email", "school", "management", "organization" };
 
 	/**
 	 * Method to extract Author Names from a pdf file
@@ -48,8 +54,9 @@ public class AuthorIssue {
 	 * @param pdf
 	 * @throws IOException
 	 */
-	public void extractAuthors(File pdf) throws IOException {
+	public String extractAuthors(File pdf) throws IOException {
 		String line = null;
+		String author = "";
 		StringBuilder builder = new StringBuilder();
 		Map<Integer, String> pdfLines = readPdfLines(pdf, true);
 		for (int i = START_LINE; i <= END_LINE; i++) {
@@ -57,11 +64,23 @@ public class AuthorIssue {
 			if (line.toLowerCase().startsWith(ABSTRACT.toLowerCase())) {
 				break;
 			} else if (!line.isEmpty() && checkIfAuthorNameExists(line)) {
-				builder.append(extractAuthorFromLine(line));
-				builder.append(COMMA_DELIMITER);
+				author = extractAuthorFromLine(line);
+				if (!author.trim().isEmpty()) {
+					builder.append(author);
+					builder.append(COMMA_DELIMITER);
+				}
 			}
 		}
-		System.out.println("AUTHORS := " + builder.deleteCharAt(builder.length() - 1));
+		if (builder.length() > 0) {
+			author = builder.deleteCharAt(builder.length() - 1).toString();
+			if (author.trim().isEmpty()) {
+				author = NOT_APPLICABLE;
+			}
+		} else {
+			author = NOT_APPLICABLE;
+		}
+		System.out.println("AUTHORS := " + author);
+		return author;
 	}
 
 	/**
@@ -84,12 +103,10 @@ public class AuthorIssue {
 				builder.append(COMMA_DELIMITER);
 			}
 		}
-		try {
+		if (builder.length() > 0) {
 			author = builder.deleteCharAt(builder.length() - 1).toString();
-		} catch (Exception ex) {
-
 		}
-		return author;
+		return author.trim();
 	}
 
 	/**
@@ -122,7 +139,8 @@ public class AuthorIssue {
 	private boolean sanitizeForName(String chkStr) {
 		boolean result = false;
 		for (String str : sanitizeDictionary) {
-			if (chkStr.toLowerCase().contains(str)) {
+			matcher = pattern.matcher(chkStr);
+			if (chkStr.toLowerCase().contains(str) || matcher.find()) {
 				result = true;
 				break;
 			}
@@ -135,7 +153,7 @@ public class AuthorIssue {
 	 * 
 	 * @param pdf
 	 */
-	public void extractIssueNo(File pdf) {
+	public String extractIssueNo(File pdf) {
 		Map<Integer, String> pdfLines = readPdfLines(pdf, false);
 		String infoLine = pdfLines.get(FIRST_LINE);
 		String issueNo = extractIssueNoFromString(infoLine.trim());
@@ -144,6 +162,7 @@ public class AuthorIssue {
 			issueNo = extractIssueNoFromString(infoLine.trim());
 		}
 		System.out.println("ISSUE NO := " + issueNo);
+		return issueNo;
 	}
 
 	/**
@@ -154,7 +173,7 @@ public class AuthorIssue {
 	 * @return
 	 */
 	private String extractIssueNoFromString(String infoLine) {
-		String issueNo = null;
+		String issueNo = NOT_APPLICABLE;
 		String[] splitStr = infoLine.split(COMMA_DELIMITER);
 		if (splitStr.length >= 4) {
 			issueNo = splitStr[2];

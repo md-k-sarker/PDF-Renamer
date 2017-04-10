@@ -54,21 +54,24 @@ public class LocationPageRange {
 	/**
 	 * 
 	 */
-	protected void extractPageRange() {
+	protected String extractPageRange() {
 		logger.debug("extractPageRange() starts");
 		String fP = metadata.getFirstPage();
 		String lP = metadata.getLastPage();
 		logger.debug("first: " + fP + " last: " + lP);
 		if (fP != null && lP != null) {
 			System.out.println("Page Range: " + fP + "-" + lP);
+			return (fP + "-" + lP);
+			
 		} else {
 			System.out.println("Page Range: not found.");
+			return ("N/A");
 		}
-		logger.debug("extractPageRange() ends");
+		//logger.debug("extractPageRange() ends");
 
 	}
 
-	protected void extractLocation() {
+	protected String extractLocation() {
 		logger.debug("extractLocation() starts");
 		iTextPdf.selectProbaleTextForLocation();
 		/*
@@ -77,12 +80,15 @@ public class LocationPageRange {
 		// iTextPdf.verifyProbableLocation();
 
 		String location = iTextPdf.extractLocationFromProbableLines();
-		if (location.length() > 1)
+		if (location.length() > 1) {
 			System.out.println("Location: " + location);
+			return location;
+		}
 		else {
 			System.out.println("Location: not found.");
+			return "N/A";
 		}
-		logger.debug("extractLocation() ends");
+		//logger.debug("extractLocation() ends");
 	}
 
 	public static void main(String[] args) {

@@ -40,7 +40,7 @@ public class PublisherYear {
 	// NOT SURE IF "ACCEPTED" should be included.
 
 	public enum publisherList {
-		IEEE, ACM, ELSEVIER, SPRINGER, KLUVER
+		IEEE, ACM, ELSEVIER, SPRINGER, KLUVER, IVYSPRING
 	}
 
 	public static boolean isMonthNear(String[] words, int i) {
@@ -140,8 +140,7 @@ public class PublisherYear {
 				return words[i].replace("doi:", "");
 
 			if (words[i].equalsIgnoreCase("DOI") || words[i].equalsIgnoreCase("DOI:")) {
-				// Checking if words[i+1] has " : " or " - " or something like
-				// that
+				// Checking if words[i+1] has " : " or " - " or something like that
 				// Eg: DOI : abc or DOI - abc
 				if (words[i + 1].matches("\\W+"))
 					return words[i + 2];
