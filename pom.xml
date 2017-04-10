@@ -45,6 +45,7 @@
 	<build>
 
 		<finalName>pdfRenamer</finalName>
+		
 		<plugins>
 
 			<!-- download source code in Eclipse -->

@@ -26,6 +26,7 @@ dependency-reduced-pom.xml
 #Test Resources
 /src/main/resources/pdfs
 /testpdfs
+testpdfs_backup/
 /jar
 
 # External tool builders
