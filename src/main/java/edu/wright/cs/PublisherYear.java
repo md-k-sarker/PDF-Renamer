@@ -12,6 +12,7 @@ import java.text.ParsePosition;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -30,7 +31,16 @@ public class PublisherYear {
 	PDDocument doc;
 	String fullText;
 
-	public enum months {
+	public String getFullText() {
+		return fullText;
+	}
+
+	public void setFullText(String fullText) {
+		//For JUNIT testing only.
+		this.fullText = fullText;
+	}
+
+	public enum Months {
 		JANUARY, JAN, FEBRUARY, FEB, MARCH, MAR, APRIL, APR, MAY, JUNE, JUN, JULY, JUL, AUGUST, AUG, SEPTEMBER, SEP, OCTOBER, OCT, NOVEMBER, NOV, DECEMBER, DEC
 	}
 
@@ -45,7 +55,7 @@ public class PublisherYear {
 
 	public static boolean isMonthNear(String[] words, int i) {
 		if (i > 0) {
-			for (Month month : Month.values()) {
+			for (Months month : Months.values()) {
 				if (words[i - 1].equalsIgnoreCase(month.toString()))
 
 					return true;
@@ -96,9 +106,15 @@ public class PublisherYear {
 		} else {
 
 			// "2016 IEE" "2014 SPRINGER" as 1st line in pdf.
+			for (publisherList search : publisherList.values())
+				if (words[i + 1].equalsIgnoreCase(search.toString()))
+					return true;
+			
+	
 			for (yearSearchTerms search : yearSearchTerms.values())
 				if (words[i + 1].equalsIgnoreCase(search.toString()))
 					return true;
+			
 		}
 
 		return false;
@@ -107,12 +123,16 @@ public class PublisherYear {
 	public static boolean isNumeric(String str) {
 		NumberFormat formatter = NumberFormat.getInstance();
 		ParsePosition pos = new ParsePosition(0);
+		//Get current year.
+		Calendar now = Calendar.getInstance();
+		int currentYear = now.get(Calendar.YEAR);
+		
 		formatter.parse(str, pos);
 		if (str.length() == pos.getIndex()) {
 			// System.out.println("Here : "+str.length());
 			if (str.length() != 0) {
 				Double yearCheck = Double.parseDouble(str);
-				if (yearCheck >= 1500 && yearCheck <= 2017)
+				if (yearCheck >= 1500 && yearCheck <= currentYear)
 					return true; // Valid publish year
 				else
 					return false; // Number but not valid publish year;
