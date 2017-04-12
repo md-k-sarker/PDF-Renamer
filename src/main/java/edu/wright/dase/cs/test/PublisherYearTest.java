@@ -2,10 +2,14 @@ package edu.wright.dase.cs.test;
 
 import static org.junit.Assert.*;
 
+import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.junit.Test;
 
@@ -145,10 +149,59 @@ assertFalse(PublisherYear.isPublish(wordsTest2, 4));
 		
 	}
 
+	@Test
+	public void testGetHeaderFooter() {
+		
+		String path1 = "src/main/resources/JUnitTestPDF/headerfooterTest.pdf";
+	
+		List<String> headerText = new ArrayList<String>();
+		List<String> footerText = new ArrayList<String>();
+		PublisherYear testObject = new PublisherYear();
+		
+		testObject.initialize(Paths.get(path1));
+		PDPage page = testObject.getDoc().getDocumentCatalog().getPages().get(0);
+		float width = page.getMediaBox().getWidth();
+		float height = page.getMediaBox().getHeight();
+		Rectangle2D headerRectangle = new Rectangle2D.Double(0, 0, width, height / 4);
+		Rectangle2D footerRectangle = new Rectangle2D.Double(0, height - height / 4, width, height / 4);
 
+		headerText = testObject.getHeaderFooter(testObject.getDoc(), "header", headerRectangle);
+		footerText = testObject.getHeaderFooter(testObject.getDoc(), "footer", footerRectangle);
+		
+		assertTrue(headerText.contains("HeaderContent"));
+		assertFalse(headerText.contains("Blahblah"));
+		
+		assertTrue(footerText.contains("FooterContent"));
+		assertFalse(footerText.contains("Blahblah"));
+	
+		
+	}
+	
+	
+	
 	@Test
 	public void testGetPublisher() {
-		//fail("Not yet implemented");
+		
+		String path1 = "src/main/resources/JUnitTestPDF/publisherTest1ACMheader.pdf";
+		String path2 = "src/main/resources/JUnitTestPDF/publisherTest2Kluverheader.pdf";
+		String path3 = "src/main/resources/JUnitTestPDF/publisherTest3NA.pdf";
+		String path4 = "src/main/resources/JUnitTestPDF/publisherTest4IEEEfooter.pdf";
+		
+		
+		PublisherYear testObject = new PublisherYear();
+		
+		testObject.initialize(Paths.get(path1));
+		assertEquals(testObject.getPublisher(),"ACM");
+		
+		testObject.initialize(Paths.get(path2));
+		assertEquals(testObject.getPublisher(),"Kluver");
+		
+		testObject.initialize(Paths.get(path3));
+		assertEquals(testObject.getPublisher(),"N/A");
+		
+		testObject.initialize(Paths.get(path4));
+		assertEquals(testObject.getPublisher(),"IEEE");
+		
 	}
 
 

@@ -28,9 +28,18 @@ import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 public class PublisherYear {
 
-	PDDocument doc;
+	private PDDocument doc;
 	String fullText;
 
+	public PDDocument getDoc() {
+		return doc;
+	}
+
+	public void setDoc(PDDocument doc) {
+		this.doc = doc;
+	}
+	
+	
 	public String getFullText() {
 		return fullText;
 	}
@@ -66,8 +75,8 @@ public class PublisherYear {
 
 	public void initialize(Path path) {
 		try {
-			this.doc = PDDocument.load(path.toFile());
-			this.fullText = getText(this.doc);
+			this.setDoc(PDDocument.load(path.toFile()));
+			this.fullText = getText(this.getDoc());
 		} catch (Exception ex) {
 
 		}
@@ -207,7 +216,7 @@ public class PublisherYear {
 			return years.get(0);
 	}
 
-	public static List<String> getHeaderFooter(PDDocument doc, String regionName, Rectangle2D region) {
+	public List<String> getHeaderFooter(PDDocument doc, String regionName, Rectangle2D region) {
 		try {
 			PDFTextStripperByArea stripper;
 			stripper = new PDFTextStripperByArea();
@@ -241,26 +250,26 @@ public class PublisherYear {
 			String footerRegion = "footer";
 
 			// Calculate approx header and footer positions
-			PDPage pages = this.doc.getDocumentCatalog().getPages().get(0);
+			PDPage pages = this.getDoc().getDocumentCatalog().getPages().get(0);
 			float width = pages.getMediaBox().getWidth();
 			float height = pages.getMediaBox().getHeight();
 
 			Rectangle2D headerRectangle = new Rectangle2D.Double(0, 0, width, height / 4);
 			Rectangle2D footerRectangle = new Rectangle2D.Double(0, height - height / 4, width, height / 4);
 
-			headerText = getHeaderFooter(this.doc, headerRegion, headerRectangle);
-			footerText = getHeaderFooter(this.doc, footerRegion, footerRectangle);
+			headerText = getHeaderFooter(this.getDoc(), headerRegion, headerRectangle);
+			footerText = getHeaderFooter(this.getDoc(), footerRegion, footerRectangle);
 
 			for (int i = 0; i < headerText.size(); i++) {
 				for (publisherList pub : publisherList.values())
 					if (pub.toString().equalsIgnoreCase(headerText.get(i)))
-						return pub.toString();
+						return headerText.get(i);
 
 			}
 			for (int i = 0; i < footerText.size(); i++) {
 				for (publisherList pub : publisherList.values())
 					if (pub.toString().equalsIgnoreCase(footerText.get(i)))
-						return pub.toString();
+						return footerText.get(i);
 
 			}
 
@@ -308,5 +317,7 @@ public class PublisherYear {
 		}
 
 	}
+
+	
 
 }
