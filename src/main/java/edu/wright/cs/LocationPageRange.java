@@ -13,6 +13,12 @@ import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
 import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
+/**
+ * 
+ * @author sarker
+ *
+ */
+
 public class LocationPageRange {
 
 	private static org.slf4j.Logger logger = LoggerFactory.getLogger(LocationPageRange.class);
