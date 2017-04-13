@@ -1,4 +1,4 @@
-package edu.wright.cs.itext;
+package edu.wright.cs;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,9 +48,27 @@ public class ITextPdf {
 	public ITextPdf(String pdfFileName, List<DocumentAuthor> authorNames) throws IOException {
 		lines = new HashMap<Integer, String>();
 		this.authorNames = authorNames;
-		locale = Constants.getCountryNames();
+
 		pdfReader = new PdfReader(pdfFileName);
 		logger.debug("pdfFileName: " + pdfFileName);
+
+	}
+
+	public int getTotalPage() {
+		if (pdfReader != null) {
+			return pdfReader.getNumberOfPages();
+		}
+		return 0;
+	}
+
+	/**
+	 * Extracts line of texts from first page of pdf.
+	 * 
+	 * @throws IOException
+	 * @pre pdfReader is not null;
+	 */
+	public void selectFirstPageTexts() throws IOException {
+
 		rectangle = pdfReader.getPageSize(pageNumber);
 
 		RenderFilter filter = new RegionTextRenderFilter(rectangle);
@@ -65,13 +83,6 @@ public class ITextPdf {
 		}
 	}
 
-	public int getTotalPage() {
-		if (pdfReader != null) {
-			return pdfReader.getNumberOfPages();
-		}
-		return 0;
-	}
-
 	/**
 	 * Select probable locations from the text.
 	 * 
@@ -81,6 +92,7 @@ public class ITextPdf {
 		assert this.lines != null;
 		logger.debug("selectProbaleTextForLocation started");
 		probableLocationLines = new HashMap<Integer, String>();
+		locale = Constants.getCountryNames();
 
 		if (this.lines != null && !this.lines.isEmpty()) {
 
@@ -253,8 +265,8 @@ public class ITextPdf {
 		// pdf.getProbableLocation().get(i));
 		// }
 		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// // e.printStackTrace();
+		// TODO Auto-generated catch block
+		// e.printStackTrace();
 		// }
 		//
 		// } else {

@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 import org.slf4j.LoggerFactory;
 
-import edu.wright.cs.itext.ITextPdf;
+import edu.wright.cs.ITextPdf;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
 import pl.edu.icm.cermine.tools.timeout.TimeoutException;
@@ -35,7 +35,7 @@ public class pdfRenamer {
 	private static boolean batchMode = true;
 
 	private static ITextPdf iTextPdf;
-	//private static PageRange pageRange;
+	// private static PageRange pageRange;
 	private static DocumentMetadata metadata;
 
 	private static AuthorIssue authorIssue;

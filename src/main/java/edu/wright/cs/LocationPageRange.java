@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 import org.slf4j.LoggerFactory;
 
-import edu.wright.cs.itext.ITextPdf;
+import edu.wright.cs.ITextPdf;
 import edu.wright.cs.util.Constants;
 import pl.edu.icm.cermine.ContentExtractor;
 import pl.edu.icm.cermine.exception.AnalysisException;
@@ -137,11 +137,13 @@ public class LocationPageRange {
 	 * Extract iTextPdf from the pdf
 	 * 
 	 * @return iTextPdf of the pdf
+	 * @throws IOException 
 	 * @pre iTextPdf is not null
 	 */
-	protected String extractLocation() {
+	protected String extractLocation() throws IOException {
 		assert iTextPdf != null;
 		logger.debug("extractLocation() starts");
+		iTextPdf.selectFirstPageTexts();
 		iTextPdf.selectProbaleTextForLocation();
 		/*
 		 * to-do need to fix it
@@ -172,47 +174,6 @@ public class LocationPageRange {
 				// runInSingleMode(args);
 			}
 		} catch (Exception ex) {
-		}
-	}
-
-	private static class PageRange {
-
-		private static org.slf4j.Logger logger = LoggerFactory.getLogger(PageRange.class);
-
-		Path file = Paths.get(Constants.outputFileDir + "result.txt");
-
-		private ContentExtractor extractor;
-		private InputStream inputStream;
-		private DocumentMetadata metadata;
-
-		public PageRange(String fileName) throws AnalysisException, IOException {
-
-			this.extractor = new ContentExtractor();
-			this.inputStream = new FileInputStream(fileName);
-			this.extractor.setPDF(inputStream);
-			this.metadata = this.extractor.getMetadata();
-
-		}
-
-		public DocumentMetadata getMetadata() throws TimeoutException, AnalysisException {
-			return this.metadata;
-		}
-
-		public String getPageRange() {
-			String firstPage = this.metadata.getFirstPage();
-			String lastPage = this.metadata.getLastPage();
-			if (firstPage == null || lastPage == null)
-				return "Page Range not found.";
-			return firstPage + "-" + lastPage;
-		}
-
-		public static void main(String[] args) {
-
-			try {
-				PageRange cPdf = new PageRange(Constants.testPdfName);
-			} catch (Exception e) {
-
-			}
 		}
 	}
 
