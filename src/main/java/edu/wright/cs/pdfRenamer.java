@@ -54,12 +54,8 @@ public class pdfRenamer {
 			System.out.println("\t	-f: indicates file ");
 			System.out.println(
 					"\t	-d: indicates directory. Will do batch operation to all files with .pdf extension. \n\t\t    Will not search recursively for inner directory.");
-			System.out.println("\t renameFormat:\n"
-					+ "\t\t  %au - authors.\n"
-					+ "\t\t  %is - issueNo. \n"
-					+ "\t\t  %lo - location.\n"
-					+ "\t\t  %pr - page range.\n"
-					+ "\t\t  %pu - publisher.\n"
+			System.out.println("\t renameFormat:\n" + "\t\t  %au - authors.\n" + "\t\t  %is - issueNo. \n"
+					+ "\t\t  %lo - location.\n" + "\t\t  %pr - page range.\n" + "\t\t  %pu - publisher.\n"
 					+ "\t\t  %yr - year.");
 			System.out.println("\t\t  Enter format without spaces in between.");
 			System.out.println("\t    Name: Name of directory or file.");
@@ -70,8 +66,21 @@ public class pdfRenamer {
 		}
 	}
 
+	/**
+	 * 
+	 * Checks the arguments and start processing according to given arguments.
+	 * call Startprocessing() for a single pdf file.
+	 * 
+	 * @param Array
+	 *            of Strings
+	 * @throws TimeoutException
+	 * @throws AnalysisException
+	 * @throws IOException
+	 * @pre: argument is not null
+	 * @post:
+	 */
 	private static void runInSingleMode(String[] args) throws TimeoutException, AnalysisException, IOException {
-
+		assert args != null;
 		appRunDir = System.getProperty("user.dir");
 		if (args.length == 0) {
 			System.out.println(fileNotGiven);
@@ -86,8 +95,20 @@ public class pdfRenamer {
 		}
 	}
 
+	/**
+	 * Checks the arguments and start processing according to given arguments.
+	 * call Startprocessing() for each pdf file.
+	 * 
+	 * @param Array
+	 *            of Strings
+	 * @throws IOException
+	 * @throws TimeoutException
+	 * @throws AnalysisException
+	 * @pre: argument is not null
+	 * @post:
+	 */
 	private static void runInBatchMode(String[] args) throws IOException, TimeoutException, AnalysisException {
-
+		assert args != null;
 		if (args.length == 0) {
 			System.out.println(flagAndFileNotGiven);
 			printHelp();
@@ -143,16 +164,29 @@ public class pdfRenamer {
 				System.out.println(flagNotGiven);
 				printHelp();
 			}
-
 		}
 	}
 
+	/**
+	 * 
+	 * @param Path
+	 *            path
+	 * @throws AnalysisException
+	 * @throws IOException
+	 * @throws TimeoutException
+	 * @pre path is not null
+	 * @pre authorIssue, locationPageRange, publisherYear, renamer is not null.
+	 * @post
+	 */
 	private static void startProcessing(Path path) throws AnalysisException, IOException, TimeoutException {
+
+		assert path != null;
+		assert authorIssue != null && locationPageRange != null && publisherYear != null && renamer != null;
 
 		logger.debug("startProcessing() starts to process " + path.toString());
 		System.out.println("\n--------Processing " + path);
 		renamer.setPath(path);
-		
+
 		// extract location and pageRange
 		locationPageRange.initialize(path);
 		String pageRange = locationPageRange.extractPageRange();
@@ -161,9 +195,9 @@ public class pdfRenamer {
 		renamer.setLocation(location);
 
 		// extract Author and Issue
-		//StringBuilder authors = authorIssue.extractAuthors(path.toFile());
+		String authors = authorIssue.extractAuthors(path.toFile());
 		String issueNo = authorIssue.extractIssueNo(path.toFile());
-		//renamer.setAuthor(authors);
+		renamer.setAuthor(new StringBuilder(authors));
 		renamer.setIssue(issueNo);
 
 		// extract Publisher and year
@@ -174,11 +208,11 @@ public class pdfRenamer {
 		renamer.setPublisher(publisher);
 		renamer.setYear(year);
 		renamer.setDoi(doi);
-		System.out.println("DOI: "+ doi);
+		System.out.println("DOI: " + doi);
 		System.out.println("Publisher: " + publisher);
 		System.out.println("Year: " + year);
-		
-		//Rename file
+
+		// Rename file
 		renamer.renameFile();
 
 		logger.debug("\n##############Processing() ends#############\n");
@@ -186,13 +220,20 @@ public class pdfRenamer {
 	}
 
 	/**
-	 * Will initialize all the constructors and class objects needed
+	 * Will initialize all the constructors and class objects needed.
+	 * 
+	 * @post: authorIssue, locationPageRange, publisherYear, renamer is not
+	 *        null.
 	 */
+
 	public static void init() {
+
 		authorIssue = new AuthorIssue();
 		locationPageRange = new LocationPageRange();
 		publisherYear = new PublisherYear();
 		renamer = new Rename();
+
+		assert authorIssue != null && locationPageRange != null && publisherYear != null && renamer != null;
 	}
 
 	public static void main(String[] args) {

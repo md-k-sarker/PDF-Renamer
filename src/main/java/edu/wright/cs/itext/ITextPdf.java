@@ -39,6 +39,12 @@ public class ITextPdf {
 	int[] searchLines = { -1, 0, 1 };
 	List<DocumentAuthor> authorNames;
 
+	/**
+	 * 
+	 * @param pdfFileName
+	 * @param authorNames
+	 * @throws IOException
+	 */
 	public ITextPdf(String pdfFileName, List<DocumentAuthor> authorNames) throws IOException {
 		lines = new HashMap<Integer, String>();
 		this.authorNames = authorNames;
@@ -66,7 +72,14 @@ public class ITextPdf {
 		return 0;
 	}
 
+	/**
+	 * Select probable locations from the text.
+	 * 
+	 * @pre line != null
+	 */
 	public void selectProbaleTextForLocation() {
+		assert this.lines != null;
+		logger.debug("selectProbaleTextForLocation started");
 		probableLocationLines = new HashMap<Integer, String>();
 
 		if (this.lines != null && !this.lines.isEmpty()) {
@@ -80,10 +93,20 @@ public class ITextPdf {
 				}
 			}
 		}
+		logger.debug("selectProbaleTextForLocation finished");
 
 	}
 
+	/**
+	 * Extract location from the probable lines.
+	 * 
+	 * @return location if possible otherwise return empty location.
+	 * @pre probableLocationLines is not null
+	 */
 	public String extractLocationFromProbableLines() {
+
+		logger.debug("extractLocationFromProbableLines started");
+
 		String location = "";
 		String city = "";
 		boolean shouldStop = false;
@@ -94,7 +117,8 @@ public class ITextPdf {
 				for (Locale country : locale) {
 					for (int i = 0; i < split.length; i++) {
 
-						//logger.debug("split[i]: " + split[i] + "\t country: " + country.getDisplayCountry());
+						// logger.debug("split[i]: " + split[i] + "\t country: "
+						// + country.getDisplayCountry());
 
 						if (split[i].trim().equals(country.getDisplayCountry())
 								|| split[i].trim().equals(country.getDisplayCountry() + ".")) {
@@ -109,6 +133,7 @@ public class ITextPdf {
 								location = split[i];
 							}
 							logger.debug("city: " + city + "\tlocation: " + location);
+							logger.debug("extractLocationFromProbableLines finished");
 							return location;
 							// break;
 						} else {
@@ -121,8 +146,10 @@ public class ITextPdf {
 				if (shouldStop)
 					break;
 			}
+			logger.debug("extractLocationFromProbableLines finished");
 			return location;
 		}
+		logger.debug("extractLocationFromProbableLines finished");
 		return location;
 
 	}

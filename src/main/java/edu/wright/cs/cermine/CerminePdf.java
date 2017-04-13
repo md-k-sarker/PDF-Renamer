@@ -49,7 +49,6 @@ public class CerminePdf {
 
 		try {
 			CerminePdf cPdf = new CerminePdf(Constants.testPdfName);
-
 		} catch (Exception e) {
 
 		}

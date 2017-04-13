@@ -6,8 +6,11 @@ import java.util.Locale;
 import org.slf4j.LoggerFactory;
 
 public class Constants {
-	public static String testPdfName = "/Users/sarker/WorkSpaces/EclipseNeon/PDF-Renamer/src/main/resources/pdfs/testpdf/1603.02754.pdf";
 
+	public static String testPdfName = "/Users/sarker/WorkSpaces/EclipseNeon/PDF-Renamer/testpdfs/81-106.pdf";
+
+	public static String testPdfNamePP = "/Users/sarker/WorkSpaces/EclipseNeon/PDF-Renamer/testpdfs/password protected.pdf";
+	
 	public static String testFileDir = "/Users/sarker/WorkSpaces/EclipseNeon/PDF-Renamer/src/main/resources/pdfs/testpdf/";
 
 	public static String outputFileDir = "/Users/sarker/WorkSpaces/EclipseNeon/PDF-Renamer/result/";

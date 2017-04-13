@@ -19,6 +19,9 @@ src/main/.DS_Store
 # Eclipse Core
 .project
 
+#Test Reports
+reports/
+
 DebugMaven
 /result
 
