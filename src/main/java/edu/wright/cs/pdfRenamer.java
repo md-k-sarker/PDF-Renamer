@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 
 import org.slf4j.LoggerFactory;
 
-import edu.wright.cs.cermine.CerminePdf;
 import edu.wright.cs.itext.ITextPdf;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
@@ -36,7 +35,7 @@ public class pdfRenamer {
 	private static boolean batchMode = true;
 
 	private static ITextPdf iTextPdf;
-	private static CerminePdf cerminePdf;
+	//private static PageRange pageRange;
 	private static DocumentMetadata metadata;
 
 	private static AuthorIssue authorIssue;
@@ -55,7 +54,7 @@ public class pdfRenamer {
 			System.out.println(
 					"\t	-d: indicates directory. Will do batch operation to all files with .pdf extension. \n\t\t    Will not search recursively for inner directory.");
 			System.out.println("\t renameFormat:\n" + "\t\t  %au - authors.\n" + "\t\t  %is - issueNo. \n"
-					+ "\t\t  %lo - location.\n" + "\t\t  %pr - page range.\n" + "\t\t  %pu - publisher.\n"
+					+ "\t\t  %lo - iTextPdf.\n" + "\t\t  %pr - page range.\n" + "\t\t  %pu - publisher.\n"
 					+ "\t\t  %yr - year.");
 			System.out.println("\t\t  Enter format without spaces in between.");
 			System.out.println("\t    Name: Name of directory or file.");
@@ -187,7 +186,7 @@ public class pdfRenamer {
 		System.out.println("\n--------Processing " + path);
 		renamer.setPath(path);
 
-		// extract location and pageRange
+		// extract iTextPdf and pageRange
 		locationPageRange.initialize(path);
 		String pageRange = locationPageRange.extractPageRange();
 		String location = locationPageRange.extractLocation();

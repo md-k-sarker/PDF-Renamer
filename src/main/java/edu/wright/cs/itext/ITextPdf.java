@@ -219,15 +219,15 @@ public class ITextPdf {
 	 */
 	public static void main(String[] args) throws AnalysisException, IOException, TimeoutException {
 		// ITextPdf pdf;
-		// CerminePdf cPdf;
-		// cPdf = new CerminePdf(Constants.testPdfName);
+		// PageRange cPdf;
+		// cPdf = new PageRange(Constants.testPdfName);
 		// pdf = new ITextPdf(Constants.testPdfName,
 		// cPdf.getMetadata().getAuthors());
 		// pdf.selectProbaleTextForLocation();
 		//
 		// pdf.verifyProbableLocation();
 		// String location = pdf.extractLocationFromProbableLines();
-		// logger.debug("Location: " + location);
+		// logger.debug("ITextPdf: " + location);
 		// for (int i : pdf.getProbableLocation().keySet()) {
 		// logger.debug("Line: " + i + " \tText: " +
 		// pdf.getProbableLocation().get(i));
@@ -241,7 +241,7 @@ public class ITextPdf {
 		// if (filePath.toString().endsWith(".pdf")) {
 		//
 		// try {
-		// cPdf = new CerminePdf(filePath.toString());
+		// cPdf = new PageRange(filePath.toString());
 		// pdf = new ITextPdf(filePath.toString(),
 		// cPdf.getMetadata().getAuthors());
 		// pdf.selectProbaleTextForLocation();

@@ -1,15 +1,17 @@
 package edu.wright.cs;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.slf4j.LoggerFactory;
 
-import edu.wright.cs.cermine.CerminePdf;
 import edu.wright.cs.itext.ITextPdf;
 import edu.wright.cs.util.Constants;
+import pl.edu.icm.cermine.ContentExtractor;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
 import pl.edu.icm.cermine.tools.timeout.TimeoutException;
@@ -37,6 +39,8 @@ public class LocationPageRange {
 	private static boolean batchMode = true;
 
 	private static ITextPdf iTextPdf;
+	private static PageRange pageRange;
+	private static DocumentMetadata metadata;
 
 	/**
 	 * @return the iTextPdf
@@ -54,18 +58,18 @@ public class LocationPageRange {
 	}
 
 	/**
-	 * @return the cerminePdf
+	 * @return the pageRange
 	 */
-	public static CerminePdf getCerminePdf() {
-		return cerminePdf;
+	public static PageRange getCerminePdf() {
+		return pageRange;
 	}
 
 	/**
-	 * @param cerminePdf
-	 *            the cerminePdf to set
+	 * @param pageRange
+	 *            the pageRange to set
 	 */
-	public static void setCerminePdf(CerminePdf cerminePdf) {
-		LocationPageRange.cerminePdf = cerminePdf;
+	public static void setCerminePdf(PageRange pageRange) {
+		LocationPageRange.pageRange = pageRange;
 	}
 
 	/**
@@ -83,9 +87,6 @@ public class LocationPageRange {
 		LocationPageRange.metadata = metadata;
 	}
 
-	private static CerminePdf cerminePdf;
-	private static DocumentMetadata metadata;
-
 	public LocationPageRange() {
 
 	}
@@ -94,20 +95,20 @@ public class LocationPageRange {
 	 * Initialize iTextPdf object and Cermine pdf Object.
 	 * 
 	 * @param path
-	 * @throws IOException 
-	 * @throws AnalysisException 
+	 * @throws IOException
+	 * @throws AnalysisException
 	 * @pre path is not null
-	 * @post cerminePdf, iTextPdf is not null
+	 * @post pageRange, iTextPdf is not null
 	 */
 	public void initialize(Path path) throws AnalysisException, IOException {
 
 		assert path != null;
-		cerminePdf = new CerminePdf(path.toString());
-		metadata = cerminePdf.getMetadata();
+		pageRange = new PageRange(path.toString());
+		metadata = pageRange.getMetadata();
 
 		iTextPdf = new ITextPdf(path.toString(), metadata.getAuthors());
 
-		assert cerminePdf != null && iTextPdf != null;
+		assert pageRange != null && iTextPdf != null;
 
 	}
 
@@ -133,9 +134,9 @@ public class LocationPageRange {
 	}
 
 	/**
-	 * Extract location from the pdf
+	 * Extract iTextPdf from the pdf
 	 * 
-	 * @return location of the pdf
+	 * @return iTextPdf of the pdf
 	 * @pre iTextPdf is not null
 	 */
 	protected String extractLocation() {
@@ -149,10 +150,10 @@ public class LocationPageRange {
 
 		String location = iTextPdf.extractLocationFromProbableLines();
 		if (location.length() > 1) {
-			System.out.println("Location: " + location);
+			System.out.println("ITextPdf: " + location);
 			return location;
 		} else {
-			System.out.println("Location: not found.");
+			System.out.println("ITextPdf: not found.");
 			return "N/A";
 		}
 		// logger.debug("extractLocation() ends");
@@ -171,6 +172,47 @@ public class LocationPageRange {
 				// runInSingleMode(args);
 			}
 		} catch (Exception ex) {
+		}
+	}
+
+	private static class PageRange {
+
+		private static org.slf4j.Logger logger = LoggerFactory.getLogger(PageRange.class);
+
+		Path file = Paths.get(Constants.outputFileDir + "result.txt");
+
+		private ContentExtractor extractor;
+		private InputStream inputStream;
+		private DocumentMetadata metadata;
+
+		public PageRange(String fileName) throws AnalysisException, IOException {
+
+			this.extractor = new ContentExtractor();
+			this.inputStream = new FileInputStream(fileName);
+			this.extractor.setPDF(inputStream);
+			this.metadata = this.extractor.getMetadata();
+
+		}
+
+		public DocumentMetadata getMetadata() throws TimeoutException, AnalysisException {
+			return this.metadata;
+		}
+
+		public String getPageRange() {
+			String firstPage = this.metadata.getFirstPage();
+			String lastPage = this.metadata.getLastPage();
+			if (firstPage == null || lastPage == null)
+				return "Page Range not found.";
+			return firstPage + "-" + lastPage;
+		}
+
+		public static void main(String[] args) {
+
+			try {
+				PageRange cPdf = new PageRange(Constants.testPdfName);
+			} catch (Exception e) {
+
+			}
 		}
 	}
 
