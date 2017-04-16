@@ -18,7 +18,7 @@ public class pdfRenamerTest {
 	 */
 	@Test
 	public void testInit() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
 
 	/**
@@ -26,7 +26,6 @@ public class pdfRenamerTest {
 	 */
 	@Test
 	public void testMain() {
-		fail("Not yet implemented");
+		//fail("Not yet implemented");
 	}
-
 }

@@ -22,22 +22,75 @@ import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentAuthor;
 import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
-public class ITextPdf {
+public class Location {
 
-	private static org.slf4j.Logger logger = LoggerFactory.getLogger(ITextPdf.class);
+	private static org.slf4j.Logger logger = LoggerFactory.getLogger(Location.class);
 	private Rectangle rectangle;
 	private PdfReader pdfReader;
-	private Rectangle topRectangle;
-	private Rectangle bottomRectangle;
 	private String firstPageText;
 	private int pageNumber = 1;
 	private ArrayList<Locale> locale;
 	private HashMap<Integer, String> lines;
-	private HashMap<Integer, String> probableLocationLines;
-	private String country;
-	private String city;
 	int[] searchLines = { -1, 0, 1 };
 	List<DocumentAuthor> authorNames;
+
+	/**
+	 * @return the authorNames
+	 */
+	public List<DocumentAuthor> getAuthorNames() {
+		return authorNames;
+	}
+
+	/**
+	 * @param authorNames the authorNames to set
+	 */
+	public void setAuthorNames(List<DocumentAuthor> authorNames) {
+		this.authorNames = authorNames;
+	}
+
+	/**
+	 * @return the lines
+	 */
+	public HashMap<Integer, String> getLines() {
+		return lines;
+	}
+
+	/**
+	 * @param lines
+	 *            the lines to set
+	 */
+	public void setLines(HashMap<Integer, String> lines) {
+		this.lines = lines;
+	}
+
+	private HashMap<Integer, String> probableLocationLines;
+
+	/**
+	 * @return the probableLocationLines
+	 */
+	public HashMap<Integer, String> getProbableLocationLines() {
+		return probableLocationLines;
+	}
+
+	/**
+	 * @param probableLocationLines
+	 *            the probableLocationLines to set
+	 */
+	public void setProbableLocationLines(HashMap<Integer, String> probableLocationLines) {
+		this.probableLocationLines = probableLocationLines;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public int getTotalPage() {
+		if (pdfReader != null) {
+			return pdfReader.getNumberOfPages();
+		}
+		return 0;
+	}
+
 
 	/**
 	 * 
@@ -45,20 +98,12 @@ public class ITextPdf {
 	 * @param authorNames
 	 * @throws IOException
 	 */
-	public ITextPdf(String pdfFileName, List<DocumentAuthor> authorNames) throws IOException {
+	public Location(String pdfFileName) throws IOException {
 		lines = new HashMap<Integer, String>();
-		this.authorNames = authorNames;
 
 		pdfReader = new PdfReader(pdfFileName);
 		logger.debug("pdfFileName: " + pdfFileName);
 
-	}
-
-	public int getTotalPage() {
-		if (pdfReader != null) {
-			return pdfReader.getNumberOfPages();
-		}
-		return 0;
 	}
 
 	/**
@@ -138,9 +183,12 @@ public class ITextPdf {
 
 							if (i - 1 >= 0) {
 								city = split[i - 1];
+								// trimmed ufter unit test
+								city = city.trim();
 							}
 							if (city.length() > 1) {
-								location = city + ", " + split[i];
+								// trimmed ufter unit test
+								location = city.trim() + ", " + split[i].trim();
 							} else {
 								location = split[i];
 							}
@@ -163,83 +211,28 @@ public class ITextPdf {
 		}
 		logger.debug("extractLocationFromProbableLines finished");
 		return location;
-
 	}
 
 	public HashMap<Integer, String> getProbableLocation() {
 		return this.probableLocationLines;
 	}
 
-	/*
-	 * to-do Need to retest agian
-	 */
-	@SuppressWarnings("finally")
-	public void verifyProbableLocation() {
 
-		boolean removed;
-		ArrayList<Integer> shouldBeRemoved;
-
-		if (this.probableLocationLines != null && this.lines != null && !this.probableLocationLines.isEmpty()) {
-			for (int lineNo : this.probableLocationLines.keySet()) {
-				// Search for top 1 upper line and lower 1 line whether it
-				// has author name or email
-				shouldBeRemoved = new ArrayList<>();
-				for (int sline : searchLines) {
-					int currentSLine = lineNo + sline;
-					if (this.lines.containsKey(currentSLine)) {
-						removed = false;
-						for (DocumentAuthor author : authorNames) {
-							if (author.getName() != null) {
-								if (this.lines.get(currentSLine).contains(author.getName())) {
-
-									removed = true;
-									// this.probableLocationLines.remove(lineNo);
-									shouldBeRemoved.add(lineNo);
-									break;
-								}
-							}
-							if (author.getEmail() != null) {
-								if (this.lines.get(currentSLine).contains(author.getEmail())) {
-
-									removed = true;
-									// this.probableLocationLines.remove(lineNo);
-									shouldBeRemoved.add(lineNo);
-									break;
-								}
-							}
-						}
-						if (removed)
-							break;
-
-					}
-				}
-				for (int i : shouldBeRemoved) {
-					try {
-						// probableLocationLines.remove(i);
-					} catch (Exception ex) {
-
-					}
-				}
-
-			}
-		}
-
-	}
 
 	/*
 	 * Only for test
 	 */
 	public static void main(String[] args) throws AnalysisException, IOException, TimeoutException {
-		// ITextPdf pdf;
+		// Location pdf;
 		// PageRange cPdf;
 		// cPdf = new PageRange(Constants.testPdfName);
-		// pdf = new ITextPdf(Constants.testPdfName,
+		// pdf = new Location(Constants.testPdfName,
 		// cPdf.getMetadata().getAuthors());
 		// pdf.selectProbaleTextForLocation();
 		//
 		// pdf.verifyProbableLocation();
 		// String location = pdf.extractLocationFromProbableLines();
-		// logger.debug("ITextPdf: " + location);
+		// logger.debug("Location: " + location);
 		// for (int i : pdf.getProbableLocation().keySet()) {
 		// logger.debug("Line: " + i + " \tText: " +
 		// pdf.getProbableLocation().get(i));
@@ -254,7 +247,7 @@ public class ITextPdf {
 		//
 		// try {
 		// cPdf = new PageRange(filePath.toString());
-		// pdf = new ITextPdf(filePath.toString(),
+		// pdf = new Location(filePath.toString(),
 		// cPdf.getMetadata().getAuthors());
 		// pdf.selectProbaleTextForLocation();
 		//

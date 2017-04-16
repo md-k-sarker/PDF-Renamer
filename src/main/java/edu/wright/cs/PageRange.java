@@ -31,6 +31,14 @@ public class PageRange {
 	private InputStream inputStream;
 	private DocumentMetadata metadata;
 
+	/**
+	 * Constructor
+	 * 
+	 * @param fileName
+	 *            of the pdf
+	 * @throws AnalysisException
+	 * @throws IOException
+	 */
 	public PageRange(String fileName) throws AnalysisException, IOException {
 
 		this.extractor = new ContentExtractor();
@@ -44,7 +52,13 @@ public class PageRange {
 		return this.metadata;
 	}
 
+	/**
+	 * 
+	 * @return
+	 * @pre metadata != null
+	 */
 	public String getPageRange() {
+		assert this.metadata != null;
 		String firstPage = this.metadata.getFirstPage();
 		String lastPage = this.metadata.getLastPage();
 		if (firstPage == null || lastPage == null)
@@ -52,6 +66,11 @@ public class PageRange {
 		return firstPage + "-" + lastPage;
 	}
 
+	/**
+	 * For test purpose only
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 
 		try {

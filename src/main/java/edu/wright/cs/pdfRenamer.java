@@ -7,9 +7,7 @@ import java.nio.file.Paths;
 
 import org.slf4j.LoggerFactory;
 
-import edu.wright.cs.ITextPdf;
 import pl.edu.icm.cermine.exception.AnalysisException;
-import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
 import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
 /**
@@ -30,13 +28,8 @@ public class pdfRenamer {
 	private static String flagNotGiven = "Input flag is not specified.";
 	private static String appRunDir = "";
 	private static String fileDir = "";
-	private static String dirNotContainPdf = "Directory does not have any pdf file.";
 	private static String fileNotPdf = "File is not pdf";
 	private static boolean batchMode = true;
-
-	private static ITextPdf iTextPdf;
-	// private static PageRange pageRange;
-	private static DocumentMetadata metadata;
 
 	private static AuthorIssue authorIssue;
 	private static LocationPageRange locationPageRange;
@@ -54,7 +47,7 @@ public class pdfRenamer {
 			System.out.println(
 					"\t	-d: indicates directory. Will do batch operation to all files with .pdf extension. \n\t\t    Will not search recursively for inner directory.");
 			System.out.println("\t renameFormat:\n" + "\t\t  %au - authors.\n" + "\t\t  %is - issueNo. \n"
-					+ "\t\t  %lo - iTextPdf.\n" + "\t\t  %pr - page range.\n" + "\t\t  %pu - publisher.\n"
+					+ "\t\t  %lo - location.\n" + "\t\t  %pr - page range.\n" + "\t\t  %pu - publisher.\n"
 					+ "\t\t  %yr - year.");
 			System.out.println("\t\t  Enter format without spaces in between.");
 			System.out.println("\t    Name: Name of directory or file.");
@@ -65,34 +58,6 @@ public class pdfRenamer {
 		}
 	}
 
-	/**
-	 * 
-	 * Checks the arguments and start processing according to given arguments.
-	 * call Startprocessing() for a single pdf file.
-	 * 
-	 * @param Array
-	 *            of Strings
-	 * @throws TimeoutException
-	 * @throws AnalysisException
-	 * @throws IOException
-	 * @pre: argument is not null
-	 * @post:
-	 */
-	private static void runInSingleMode(String[] args) throws TimeoutException, AnalysisException, IOException {
-		assert args != null;
-		appRunDir = System.getProperty("user.dir");
-		if (args.length == 0) {
-			System.out.println(fileNotGiven);
-			printHelp();
-		} else if (args.length == 2) {
-			if (args[1].endsWith(".pdf")) {
-				Path path = java.nio.file.Paths.get(args[1]).toAbsolutePath();
-				startProcessing(path);
-			} else {
-				System.out.println(fileNotPdf);
-			}
-		}
-	}
 
 	/**
 	 * Checks the arguments and start processing according to given arguments.
@@ -106,7 +71,7 @@ public class pdfRenamer {
 	 * @pre: argument is not null
 	 * @post:
 	 */
-	private static void runInBatchMode(String[] args) throws IOException, TimeoutException, AnalysisException {
+	private static void processArguments(String[] args) throws IOException, TimeoutException, AnalysisException {
 		assert args != null;
 		if (args.length == 0) {
 			System.out.println(flagAndFileNotGiven);
@@ -124,7 +89,7 @@ public class pdfRenamer {
 					for (int i = 2; i < args.length; i++) {
 						if (args[i].endsWith(".pdf")) {
 							Path path = java.nio.file.Paths.get(args[i]).toAbsolutePath();
-							startProcessing(path);
+							startRenamingProcess(path);
 						} else {
 							System.out.println(fileNotPdf);
 						}
@@ -144,7 +109,7 @@ public class pdfRenamer {
 					Files.walk(Paths.get(fileDir)).filter(f -> f.toString().endsWith(".pdf")).forEach(f -> {
 						try {
 							logger.debug("#####Processing file: " + f + "  ######");
-							startProcessing(f);
+							startRenamingProcess(f);
 						} catch (TimeoutException e) {
 							e.printStackTrace();
 						} catch (AnalysisException e) {
@@ -177,7 +142,7 @@ public class pdfRenamer {
 	 * @pre authorIssue, locationPageRange, publisherYear, renamer is not null.
 	 * @post
 	 */
-	private static void startProcessing(Path path) throws AnalysisException, IOException, TimeoutException {
+	private static void startRenamingProcess(Path path) throws AnalysisException, IOException, TimeoutException {
 
 		assert path != null;
 		assert authorIssue != null && locationPageRange != null && publisherYear != null && renamer != null;
@@ -186,7 +151,7 @@ public class pdfRenamer {
 		System.out.println("\n--------Processing " + path);
 		renamer.setPath(path);
 
-		// extract iTextPdf and pageRange
+		// extract location and pageRange
 		locationPageRange.initialize(path);
 		String pageRange = locationPageRange.extractPageRange();
 		String location = locationPageRange.extractLocation();
@@ -243,12 +208,8 @@ public class pdfRenamer {
 
 		try {
 			init();
+			processArguments(args);
 
-			if (batchMode) {
-				runInBatchMode(args);
-			} else {
-				runInSingleMode(args);
-			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

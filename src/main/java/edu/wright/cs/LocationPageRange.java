@@ -1,20 +1,12 @@
 package edu.wright.cs;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.slf4j.LoggerFactory;
 
-import edu.wright.cs.ITextPdf;
-import edu.wright.cs.util.Constants;
-import pl.edu.icm.cermine.ContentExtractor;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
-import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
 /**
  * 
@@ -24,43 +16,31 @@ import pl.edu.icm.cermine.tools.timeout.TimeoutException;
 
 public class LocationPageRange {
 
-	private static org.slf4j.Logger logger = LoggerFactory.getLogger(LocationPageRange.class);
+	private  org.slf4j.Logger logger = LoggerFactory.getLogger(LocationPageRange.class);
 
-	private static boolean isDirectory = false;
-	private static String flagAndFileNotGiven = "Flag and Input file/directory is not specified.";
-	private static String fileNotGiven = "Input file is not specified.";
-	private static String dirNotGiven = "Input directory is not specified.";
-	private static String multipleDirGiven = "Multiple directory is not permitted.";
-	private static String flagNotGiven = "Input flag is not specified.";
-	private static String appRunDir = "";
-	private static String fileDir = "";
-	private static String dirNotContainPdf = "Directory does not have any pdf file.";
-	private static String fileNotPdf = "File is not pdf";
-	private static boolean batchMode = true;
-
-	private static ITextPdf iTextPdf;
-	private static PageRange pageRange;
-	private static DocumentMetadata metadata;
+	private  Location location;
+	private  PageRange pageRange;
+	private  DocumentMetadata metadata;
 
 	/**
-	 * @return the iTextPdf
+	 * @return the location object
 	 */
-	public static ITextPdf getiTextPdf() {
-		return iTextPdf;
+	public  Location getLocationObj() {
+		return location;
 	}
 
 	/**
-	 * @param iTextPdf
-	 *            the iTextPdf to set
+	 * @param location
+	 *            the location to set
 	 */
-	public static void setiTextPdf(ITextPdf iTextPdf) {
-		LocationPageRange.iTextPdf = iTextPdf;
+	public  void setLocationObj(Location location) {
+		this.location = location;
 	}
 
 	/**
 	 * @return the pageRange
 	 */
-	public static PageRange getCerminePdf() {
+	public  PageRange getPageRangeObj() {
 		return pageRange;
 	}
 
@@ -68,14 +48,14 @@ public class LocationPageRange {
 	 * @param pageRange
 	 *            the pageRange to set
 	 */
-	public static void setCerminePdf(PageRange pageRange) {
-		LocationPageRange.pageRange = pageRange;
+	public  void setPageRangeObj(PageRange pageRange) {
+		this.pageRange = pageRange;
 	}
 
 	/**
 	 * @return the metadata
 	 */
-	public static DocumentMetadata getMetadata() {
+	public  DocumentMetadata getMetadataObj() {
 		return metadata;
 	}
 
@@ -83,32 +63,31 @@ public class LocationPageRange {
 	 * @param metadata
 	 *            the metadata to set
 	 */
-	public static void setMetadata(DocumentMetadata metadata) {
-		LocationPageRange.metadata = metadata;
-	}
-
-	public LocationPageRange() {
-
+	public  void setMetadataObj(DocumentMetadata metadata) {
+		this.metadata = metadata;
 	}
 
 	/**
-	 * Initialize iTextPdf object and Cermine pdf Object.
+	 * Initialize location object and Cermine pdf Object.
 	 * 
 	 * @param path
 	 * @throws IOException
 	 * @throws AnalysisException
 	 * @pre path is not null
-	 * @post pageRange, iTextPdf is not null
+	 * @post pageRange, location is not null
 	 */
 	public void initialize(Path path) throws AnalysisException, IOException {
 
-		assert path != null;
+		//assert path != null;
 		pageRange = new PageRange(path.toString());
+
+		//assert pageRange != null;
+
 		metadata = pageRange.getMetadata();
+		location = new Location(path.toString());
+		location.setAuthorNames(metadata.getAuthors());
 
-		iTextPdf = new ITextPdf(path.toString(), metadata.getAuthors());
-
-		assert pageRange != null && iTextPdf != null;
+		//assert location != null;
 
 	}
 
@@ -116,9 +95,12 @@ public class LocationPageRange {
 	 * Extract Page Range if possible. If not possible then return N/A
 	 * 
 	 * @return PageRange of the pdf.
+	 * @pre metadata is not null
 	 */
-	protected String extractPageRange() {
+	public String extractPageRange() {
 		logger.debug("extractPageRange() starts");
+		assert metadata != null;
+
 		String fP = metadata.getFirstPage();
 		String lP = metadata.getLastPage();
 		logger.debug("first: " + fP + " last: " + lP);
@@ -130,51 +112,48 @@ public class LocationPageRange {
 			System.out.println("Page Range: not found.");
 			return ("N/A");
 		}
-		// logger.debug("extractPageRange() ends");
+
 	}
 
 	/**
-	 * Extract iTextPdf from the pdf
+	 * Extract location from the pdf
 	 * 
-	 * @return iTextPdf of the pdf
-	 * @throws IOException 
-	 * @pre iTextPdf is not null
+	 * @return location of the pdf
+	 * @throws IOException
+	 * @pre location is not null
 	 */
-	protected String extractLocation() throws IOException {
-		assert iTextPdf != null;
+	public String extractLocation() throws IOException {
+		assert location != null;
 		logger.debug("extractLocation() starts");
-		iTextPdf.selectFirstPageTexts();
-		iTextPdf.selectProbaleTextForLocation();
+		location.selectFirstPageTexts();
+		location.selectProbaleTextForLocation();
 		/*
 		 * to-do need to fix it
 		 */
-		// iTextPdf.verifyProbableLocation();
+		// location.verifyProbableLocation();
 
-		String location = iTextPdf.extractLocationFromProbableLines();
-		if (location.length() > 1) {
-			System.out.println("ITextPdf: " + location);
-			return location;
+		String loc = location.extractLocationFromProbableLines();
+		if (loc.length() > 1) {
+			System.out.println("Location: " + loc);
+			return loc;
 		} else {
-			System.out.println("ITextPdf: not found.");
+			System.out.println("Location: not found.");
 			return "N/A";
 		}
 		// logger.debug("extractLocation() ends");
 	}
 
-	public static void main(String[] args) {
+	/**
+	 * For testing purpose only
+	 * 
+	 * @param args
+	 */
+	public  void main(String[] args) {
 
 		for (int i = 0; i < args.length; i++) {
 			logger.debug("command line args[" + i + "]\t" + args[i]);
 		}
 
-		try {
-			if (batchMode) {
-				// runInBatchMode(args);
-			} else {
-				// runInSingleMode(args);
-			}
-		} catch (Exception ex) {
-		}
 	}
 
 }
