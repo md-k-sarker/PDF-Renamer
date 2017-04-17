@@ -1,4 +1,4 @@
-package edu.wright.cs;
+package edu.wright.cs.test;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,8 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.wright.cs.AuthorIssue;
 
 
 public class TestAuthorIssue {

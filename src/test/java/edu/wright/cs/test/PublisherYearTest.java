@@ -1,4 +1,4 @@
-package edu.wright.dase.cs.test;
+package edu.wright.cs.test;
 
 import static org.junit.Assert.*;
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package edu.wright.dase.cs.test;
+package edu.wright.cs.test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

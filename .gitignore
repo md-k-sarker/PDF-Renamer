@@ -12,6 +12,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.umlproject
+.euml2
 .DS_Store
 src/.DS_Store
 src/main/.DS_Store
