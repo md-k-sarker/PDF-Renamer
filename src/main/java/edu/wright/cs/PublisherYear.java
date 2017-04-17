@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -27,10 +27,28 @@ import org.apache.pdfbox.text.PDFTextStripperByArea;
 
 public class PublisherYear {
 
-	PDDocument doc;
+	private PDDocument doc;
 	String fullText;
 
-	public enum months {
+	public PDDocument getDoc() {
+		return doc;
+	}
+
+	public void setDoc(PDDocument doc) {
+		this.doc = doc;
+	}
+	
+	
+	public String getFullText() {
+		return fullText;
+	}
+
+	public void setFullText(String fullText) {
+		//For JUNIT testing only.
+		this.fullText = fullText;
+	}
+
+	public enum Months {
 		JANUARY, JAN, FEBRUARY, FEB, MARCH, MAR, APRIL, APR, MAY, JUNE, JUN, JULY, JUL, AUGUST, AUG, SEPTEMBER, SEP, OCTOBER, OCT, NOVEMBER, NOV, DECEMBER, DEC
 	}
 
@@ -40,12 +58,12 @@ public class PublisherYear {
 	// NOT SURE IF "ACCEPTED" should be included.
 
 	public enum publisherList {
-		IEEE, ACM, ELSEVIER, SPRINGER, KLUVER
+		IEEE, ACM, ELSEVIER, SPRINGER, KLUVER, IVYSPRING
 	}
 
 	public static boolean isMonthNear(String[] words, int i) {
 		if (i > 0) {
-			for (Month month : Month.values()) {
+			for (Months month : Months.values()) {
 				if (words[i - 1].equalsIgnoreCase(month.toString()))
 
 					return true;
@@ -56,8 +74,8 @@ public class PublisherYear {
 
 	public void initialize(Path path) {
 		try {
-			this.doc = PDDocument.load(path.toFile());
-			this.fullText = getText(this.doc);
+			this.setDoc(PDDocument.load(path.toFile()));
+			this.fullText = getText(this.getDoc());
 		} catch (Exception ex) {
 
 		}
@@ -96,9 +114,15 @@ public class PublisherYear {
 		} else {
 
 			// "2016 IEE" "2014 SPRINGER" as 1st line in pdf.
+			for (publisherList search : publisherList.values())
+				if (words[i + 1].equalsIgnoreCase(search.toString()))
+					return true;
+			
+	
 			for (yearSearchTerms search : yearSearchTerms.values())
 				if (words[i + 1].equalsIgnoreCase(search.toString()))
 					return true;
+			
 		}
 
 		return false;
@@ -107,12 +131,16 @@ public class PublisherYear {
 	public static boolean isNumeric(String str) {
 		NumberFormat formatter = NumberFormat.getInstance();
 		ParsePosition pos = new ParsePosition(0);
+		//Get current year.
+		Calendar now = Calendar.getInstance();
+		int currentYear = now.get(Calendar.YEAR);
+		
 		formatter.parse(str, pos);
 		if (str.length() == pos.getIndex()) {
 			// System.out.println("Here : "+str.length());
 			if (str.length() != 0) {
 				Double yearCheck = Double.parseDouble(str);
-				if (yearCheck >= 1500 && yearCheck <= 2017)
+				if (yearCheck >= 1500 && yearCheck <= currentYear)
 					return true; // Valid publish year
 				else
 					return false; // Number but not valid publish year;
@@ -140,8 +168,7 @@ public class PublisherYear {
 				return words[i].replace("doi:", "");
 
 			if (words[i].equalsIgnoreCase("DOI") || words[i].equalsIgnoreCase("DOI:")) {
-				// Checking if words[i+1] has " : " or " - " or something like
-				// that
+				// Checking if words[i+1] has " : " or " - " or something like that
 				// Eg: DOI : abc or DOI - abc
 				if (words[i + 1].matches("\\W+"))
 					return words[i + 2];
@@ -188,7 +215,7 @@ public class PublisherYear {
 			return years.get(0);
 	}
 
-	public static List<String> getHeaderFooter(PDDocument doc, String regionName, Rectangle2D region) {
+	public List<String> getHeaderFooter(PDDocument doc, String regionName, Rectangle2D region) {
 		try {
 			PDFTextStripperByArea stripper;
 			stripper = new PDFTextStripperByArea();
@@ -222,26 +249,26 @@ public class PublisherYear {
 			String footerRegion = "footer";
 
 			// Calculate approx header and footer positions
-			PDPage pages = this.doc.getDocumentCatalog().getPages().get(0);
+			PDPage pages = this.getDoc().getDocumentCatalog().getPages().get(0);
 			float width = pages.getMediaBox().getWidth();
 			float height = pages.getMediaBox().getHeight();
 
 			Rectangle2D headerRectangle = new Rectangle2D.Double(0, 0, width, height / 4);
 			Rectangle2D footerRectangle = new Rectangle2D.Double(0, height - height / 4, width, height / 4);
 
-			headerText = getHeaderFooter(this.doc, headerRegion, headerRectangle);
-			footerText = getHeaderFooter(this.doc, footerRegion, footerRectangle);
+			headerText = getHeaderFooter(this.getDoc(), headerRegion, headerRectangle);
+			footerText = getHeaderFooter(this.getDoc(), footerRegion, footerRectangle);
 
 			for (int i = 0; i < headerText.size(); i++) {
 				for (publisherList pub : publisherList.values())
 					if (pub.toString().equalsIgnoreCase(headerText.get(i)))
-						return pub.toString();
+						return headerText.get(i);
 
 			}
 			for (int i = 0; i < footerText.size(); i++) {
 				for (publisherList pub : publisherList.values())
 					if (pub.toString().equalsIgnoreCase(footerText.get(i)))
-						return pub.toString();
+						return footerText.get(i);
 
 			}
 
@@ -289,5 +316,7 @@ public class PublisherYear {
 		}
 
 	}
+
+	
 
 }

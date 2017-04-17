@@ -12,9 +12,15 @@ local.properties
 .settings/
 .loadpath
 .recommenders
+.DS_Store
+src/.DS_Store
+src/main/.DS_Store
 
 # Eclipse Core
 .project
+
+#Test Reports
+reports/
 
 DebugMaven
 /result
@@ -26,6 +32,7 @@ dependency-reduced-pom.xml
 #Test Resources
 /src/main/resources/pdfs
 /testpdfs
+testpdfs_backup/
 /jar
 
 # External tool builders
