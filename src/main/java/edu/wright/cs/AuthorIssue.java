@@ -35,16 +35,16 @@ public class AuthorIssue {
 	private static final String PERIOD_DELIMITER = ".";
 	private static final String WHITESPACE_DELIMITER = "#############";
 	private static final String ABSTRACT = "Abstract";
-	private static final String NOT_APPLICABLE="N/A";
+	private static final String NOT_APPLICABLE = "N/A";
 	private static final String NEW_LINE = "\n";
 	private static final int FIRST_LINE = 1;
 	private static final int START_LINE = 3;
 	private static final int END_LINE = 7;
 	private static final int PAGE_NUMBER = 1;
 	private static Pattern pattern = Pattern.compile("([0-9])");
-	private Matcher matcher=null;
-	
-	private static final String[] sanitizeDictionary = { "member", "institute", "technology", "university",
+	private Matcher matcher = null;
+
+	private static final String[] SANITIZE_DICTIONARY = { "member", "institute", "technology", "university",
 			"communications", "ieee", "acm", "college", "information", "fellow", "department", "computer", "science",
 			"@", "email", "school", "management", "organization" };
 
@@ -55,12 +55,14 @@ public class AuthorIssue {
 	 * @throws IOException
 	 */
 	public String extractAuthors(File pdf) throws IOException {
+		assert pdf != null && pdf.isFile();
 		String line = null;
 		String author = "";
 		StringBuilder builder = new StringBuilder();
 		Map<Integer, String> pdfLines = readPdfLines(pdf, true);
 		for (int i = START_LINE; i <= END_LINE; i++) {
 			line = pdfLines.get(i).trim();
+			assert line != null;
 			if (line.toLowerCase().startsWith(ABSTRACT.toLowerCase())) {
 				break;
 			} else if (!line.isEmpty() && checkIfAuthorNameExists(line)) {
@@ -80,11 +82,12 @@ public class AuthorIssue {
 			author = NOT_APPLICABLE;
 		}
 		System.out.println("AUTHORS := " + author);
+		assert author != null && author != "";
 		return author;
 	}
 
 	/**
-	 * Method extracts comma seperated author names from given line
+	 * Method extracts comma separated author names from given line
 	 * 
 	 * @param line
 	 * @return
@@ -116,10 +119,11 @@ public class AuthorIssue {
 	 * @return
 	 */
 	private String sanitizeConjunction(String str) {
+		String sanitizedStr=null;
 		if (str.contains("and")) {
-			str = str.replace("and", "").trim();
+			sanitizedStr = str.replace("and", "").trim();
 		}
-		return str;
+		return sanitizedStr;
 	}
 
 	/**
@@ -138,7 +142,7 @@ public class AuthorIssue {
 	 */
 	private boolean sanitizeForName(String chkStr) {
 		boolean result = false;
-		for (String str : sanitizeDictionary) {
+		for (String str : SANITIZE_DICTIONARY) {
 			matcher = pattern.matcher(chkStr);
 			if (chkStr.toLowerCase().contains(str) || matcher.find()) {
 				result = true;
@@ -154,14 +158,17 @@ public class AuthorIssue {
 	 * @param pdf
 	 */
 	public String extractIssueNo(File pdf) {
+		assert pdf != null && pdf.isFile();
 		Map<Integer, String> pdfLines = readPdfLines(pdf, false);
 		String infoLine = pdfLines.get(FIRST_LINE);
 		String issueNo = extractIssueNoFromString(infoLine.trim());
-		if (null == issueNo) {
+		if (null == issueNo) { // if first line/header is not present, look for
+								// last line/footer
 			infoLine = pdfLines.get(pdfLines.size());
 			issueNo = extractIssueNoFromString(infoLine.trim());
 		}
 		System.out.println("ISSUE NO := " + issueNo);
+		assert issueNo != null && issueNo != "";
 		return issueNo;
 	}
 
@@ -258,6 +265,7 @@ public class AuthorIssue {
 		AuthorIssue pdfRenamer = new AuthorIssue();
 		if (args.length < 1) {
 			System.out.println("PLEASE PROVIDE PDF FOLDER PATH");
+			System.exit(1);
 		}
 		String pdfPath = args[0];
 		List<File> pdfs = pdfRenamer.getFiles(pdfPath);
