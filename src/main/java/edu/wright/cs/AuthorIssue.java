@@ -30,7 +30,6 @@ import com.itextpdf.text.pdf.parser.TextExtractionStrategy;
 
 public class AuthorIssue {
 
-	// private static String PDF_FILPATH = "testpdfs";
 	private static final String COMMA_DELIMITER = ",";
 	private static final String PERIOD_DELIMITER = ".";
 	private static final String WHITESPACE_DELIMITER = "#############";
@@ -119,9 +118,9 @@ public class AuthorIssue {
 	 * @return
 	 */
 	private String sanitizeConjunction(String str) {
-		String sanitizedStr=null;
-		if (str.contains("and")) {
-			sanitizedStr = str.replace("and", "").trim();
+		String sanitizedStr=str;
+		if (sanitizedStr.contains("and")) {
+			sanitizedStr = sanitizedStr.replace("and", "").trim();
 		}
 		return sanitizedStr;
 	}
@@ -142,13 +141,16 @@ public class AuthorIssue {
 	 */
 	private boolean sanitizeForName(String chkStr) {
 		boolean result = false;
-		for (String str : SANITIZE_DICTIONARY) {
-			matcher = pattern.matcher(chkStr);
-			if (chkStr.toLowerCase().contains(str) || matcher.find()) {
-				result = true;
-				break;
+		if(null!= chkStr){
+			for (String str : SANITIZE_DICTIONARY) {
+				matcher = pattern.matcher(chkStr);
+				if (chkStr.toLowerCase().contains(str) || matcher.find()) {
+					result = true;
+					break;
+				}
 			}
 		}
+		
 		return result;
 	}
 
