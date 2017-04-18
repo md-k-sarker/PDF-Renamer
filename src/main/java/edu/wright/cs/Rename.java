@@ -5,7 +5,7 @@ import java.nio.file.Path;
 
 public class Rename {
 
-	private StringBuilder Author;
+	private String Author;
 	private String Issue;
 	private String Location;
 	private String PageRange;
@@ -76,11 +76,11 @@ public class Rename {
 		Doi = doi;
 	}
 
-	public StringBuilder getAuthor() {
+	public String getAuthor() {
 		return Author;
 	}
 
-	public void setAuthor(StringBuilder author) {
+	public void setAuthor(String author) {
 		Author = author;
 	}
 

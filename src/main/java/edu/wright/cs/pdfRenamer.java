@@ -163,7 +163,7 @@ public class pdfRenamer {
 		// extract Author and Issue
 		String authors = authorIssue.extractAuthors(path.toFile());
 		String issueNo = authorIssue.extractIssueNo(path.toFile());
-		renamer.setAuthor(new StringBuilder(authors));
+		renamer.setAuthor(authors);
 		renamer.setIssue(issueNo);
 
 		// extract Publisher and year
