@@ -88,10 +88,15 @@ public class PublisherYearTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testGetText() {
-		String path1 = "src/main/resources/JUnitTestPDF/TestPDF1.pdf";
-		String path2 = "src/main/resources/JUnitTestPDF/TestPDFempty.pdf";
+		String path1 = "/target/test-classes/JUnitTestPDF/TestPDF1.pdf";
+		String path2 = "/target/test-classes/JUnitTestPDF/TestPDFempty.pdf";
 		PDDocument doc1, doc2;
 		try {
+
+			// updated
+			String runningDir = System.getProperty("user.dir");
+			path1 = runningDir + path1;
+			path2 = runningDir + path2;
 
 			// Check for PDF's with content
 			doc1 = PDDocument.load(Paths.get(path1).toFile());
@@ -146,7 +151,10 @@ public class PublisherYearTest {
 	@Test
 	public void testGetHeaderFooter() {
 
-		String path1 = "src/main/resources/JUnitTestPDF/headerfooterTest.pdf";
+		String path1 = "/target/test-classes/JUnitTestPDF/headerfooterTest.pdf";
+		// updated
+		String runningDir = System.getProperty("user.dir");
+		path1 = runningDir + path1;
 
 		List<String> headerText = new ArrayList<String>();
 		List<String> footerText = new ArrayList<String>();
@@ -173,10 +181,17 @@ public class PublisherYearTest {
 	@Test
 	public void testGetPublisher() {
 
-		String path1 = "src/main/resources/JUnitTestPDF/publisherTest1ACMheader.pdf";
-		String path2 = "src/main/resources/JUnitTestPDF/publisherTest2Kluverheader.pdf";
-		String path3 = "src/main/resources/JUnitTestPDF/publisherTest3NA.pdf";
-		String path4 = "src/main/resources/JUnitTestPDF/publisherTest4IEEEfooter.pdf";
+		String path1 = "/target/test-classes/JUnitTestPDF/publisherTest1ACMheader.pdf";
+		String path2 = "/target/test-classes/JUnitTestPDF/publisherTest2Kluverheader.pdf";
+		String path3 = "/target/test-classes/JUnitTestPDF/publisherTest3NA.pdf";
+		String path4 = "/target/test-classes/JUnitTestPDF/publisherTest4IEEEfooter.pdf";
+
+		// updated
+		String runningDir = System.getProperty("user.dir");
+		path1 = runningDir + path1;
+		path2 = runningDir + path2;
+		path3 = runningDir + path3;
+		path4 = runningDir + path4;
 
 		PublisherYear testObject = new PublisherYear();
 

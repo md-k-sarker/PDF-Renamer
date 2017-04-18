@@ -11,11 +11,9 @@ import java.nio.file.Paths;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import edu.wright.cs.Location;
 import edu.wright.cs.LocationPageRange;
 import edu.wright.cs.PageRange;
-import edu.wright.cs.util.Constants;
 import pl.edu.icm.cermine.exception.AnalysisException;
 import pl.edu.icm.cermine.metadata.model.DocumentMetadata;
 
@@ -33,8 +31,10 @@ public class LocationPageRangeTest {
 
 	String loc = "Beijing, China";
 	String PAGERANGE = "181-190";
+	String testPdfForLocationPageRange = "/target/test-classes/JUnitTestPDF/v14p0181.pdf";
 	String testPdfForPageRange = "/target/test-classes/JUnitTestPDF/v14p0181.pdf";
 	String testPdfForLocation = "/target/test-classes/JUnitTestPDF/geisterGame.pdf";
+	String testPdfForPasswordProtection = "/target/test-classes/JUnitTestPDF/password protected.pdf";
 
 	@Before
 	public void initialize() {
@@ -42,6 +42,8 @@ public class LocationPageRangeTest {
 		String runningDir = System.getProperty("user.dir");
 		testPdfForPageRange = runningDir + testPdfForPageRange;
 		testPdfForLocation = runningDir + testPdfForLocation;
+		testPdfForLocationPageRange = runningDir + testPdfForLocationPageRange;
+		testPdfForPasswordProtection = runningDir + testPdfForPasswordProtection;
 		locationPageRange = new LocationPageRange();
 
 	}
@@ -54,7 +56,7 @@ public class LocationPageRangeTest {
 	public void testInitialize() {
 		// test for regular pdf
 		try {
-			locationPageRange.initialize(Paths.get(Constants.testPdfName));
+			locationPageRange.initialize(Paths.get(testPdfForLocationPageRange));
 
 			pageRange = locationPageRange.getPageRangeObj();
 			metadata = locationPageRange.getMetadataObj();
@@ -75,7 +77,7 @@ public class LocationPageRangeTest {
 		// test for password protected pdf
 		// this must throw exception
 		try {
-			locationPageRange.initialize(Paths.get(Constants.testPdfNamePP));
+			locationPageRange.initialize(Paths.get(testPdfForPasswordProtection));
 			fail("If this executes then exception is not thrown");
 		} catch (Exception e) {
 

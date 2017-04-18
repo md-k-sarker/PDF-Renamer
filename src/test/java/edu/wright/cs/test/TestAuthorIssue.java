@@ -12,8 +12,8 @@ import edu.wright.cs.AuthorIssue;
 
 public class TestAuthorIssue {
 
-	private static final String pdfName = "00895976.pdf";
-	private static final String invalidFileName = "1603.02754.pdf";
+	private static  String pdfName = "/target/test-classes/JUnitTestPDF/00895976.pdf";
+	private static  String invalidFileName = "/target/test-classes/JUnitTestPDF/1603.02754.pdf";
 	private File pdf;
 	private File invalidFile;
 	private static String expectedAuthors = null;
@@ -23,8 +23,14 @@ public class TestAuthorIssue {
 	@Before
 	public void runBeforeTestMethods() {
 		ClassLoader classLoader = getClass().getClassLoader();
-		pdf = new File(classLoader.getResource(pdfName).getFile());
-		invalidFile = new File(classLoader.getResource(invalidFileName).getFile());
+		
+		//updated 
+		String runningDir = System.getProperty("user.dir");
+		pdfName = runningDir + pdfName;
+		invalidFileName = runningDir + invalidFileName;
+		
+		pdf = new File(pdfName);
+		invalidFile = new File(invalidFileName);
 		NOT_APPLICABLE="N/A";
 		expectedAuthors = "Maja Pantic,Leon J.M. Rothkrantz";
 		expectedIssueNo = "12";
