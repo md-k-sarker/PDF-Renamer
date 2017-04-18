@@ -120,6 +120,11 @@ public class Rename {
 				if (!Year.equals("N/A"))
 					filename += Year;
 				break;
+			case "n":
+				filename += " ";
+				break;
+			default:
+				filename += str;
 			}
 		}
 		// System.out.println("newFilename formed: "+filename+ " length = " +
