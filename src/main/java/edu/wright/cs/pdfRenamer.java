@@ -48,7 +48,9 @@ public class pdfRenamer {
 					"\t	-d: indicates directory. Will do batch operation to all files with .pdf extension. \n\t\t    Will not search recursively for inner directory.");
 			System.out.println("\t renameFormat:\n" + "\t\t  %au - authors.\n" + "\t\t  %is - issueNo. \n"
 					+ "\t\t  %lo - location.\n" + "\t\t  %pr - page range.\n" + "\t\t  %pu - publisher.\n"
-					+ "\t\t  %yr - year.");
+					+ "\t\t  %yr - year."
+					+ "\t\t  %n  - white space"
+					+ "\t\t  %anyCharacter - insert any character");
 			System.out.println("\t\t  Enter format without spaces in between.");
 			System.out.println("\t    Name: Name of directory or file.");
 			System.out.println("\t\t  Multiple file name seperated by space can be given.");

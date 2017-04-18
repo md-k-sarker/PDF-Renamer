@@ -127,8 +127,10 @@ public class Rename {
 				filename += str;
 			}
 		}
-		// System.out.println("newFilename formed: "+filename+ " length = " +
-		// filename.length());
+		
+		//Updated. Removing extra whitespaces.
+		filename=filename.trim();
+		
 		// Rename if one or more field is found.
 		if (filename.length() > 0) {
 			filename += ".pdf";
