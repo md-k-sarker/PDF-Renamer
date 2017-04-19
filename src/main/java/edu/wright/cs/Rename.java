@@ -125,7 +125,7 @@ public class Rename {
 				break;
 			default:
 				if(filename.trim().length()>0)
-				filename += str;
+					filename += str;
 			}
 		}
 		
