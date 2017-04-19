@@ -15,23 +15,23 @@
 
 ####Commands:  pdfRenamer -flag renameFormat Name
 
-<ol>-flag: indicates file or directory.
+<ul>-flag: indicates file or directory.
 <li> -f: indicates file </li>
- <li> -d: indicates directory. Will do batch operation to all files with .pdf extension. Will not search recursively for inner directory.</li></ol>
+ <li> -d: indicates directory. Will do batch operation to all files with .pdf extension. Will not search recursively for inner directory.</li></ul>
 
-<ol>renameFormat:
+<ul>renameFormat:
   <li>%au - authors.</li>
   <li>%is - issueNo. </li>
   <li>%lo - location.</li>
   <li>%pr - page range.</li>
   <li>%pu - publisher.</li>
   <li>%yr - year.</li>		  <li>%n  - white space</li>		  <li>%anyCharacter - insert any character</li>
-  </ol>
+  </ul>
 		  Enter format without spaces in between.
 	
- <ol>Name: Name of directory or file.
+ <ul>Name: Name of directory or file.
 		<li>  Multiple file name seperated by space can be given.</li>
-		<li> Multiple directory name is not permitted.</li> </ol>
+		<li> Multiple directory name is not permitted.</li> </ul>
 
 
 ### Functionality:
