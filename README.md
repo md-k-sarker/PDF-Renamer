@@ -7,9 +7,30 @@
 
 <li> Run jar with the following cmd: 
 <ul>
-<li>java -jar pdfRenamer.jar -flag %printformat path/to/your/pdf </li>
+<li>java -jar pdfRenamer.jar -flag %renameFormat path/to/your/pdf </li>
 </ul>
 </ol>
+
+####Details about how to run the program 
+
+Commands:  pdfRenamer -flag renameFormat Name
+
+-flag: indicates file or directory.
+  -f: indicates file 
+  -d: indicates directory. Will do batch operation to all files with .pdf extension. Will not search recursively for inner directory.
+
+renameFormat:
+  %au - authors.
+  %is - issueNo. 
+  %lo - location.
+  %pr - page range.
+  %pu - publisher.
+  %yr - year.		  %n  - white space		  %anyCharacter - insert any character
+		  Enter format without spaces in between.
+	
+ Name: Name of directory or file.
+		  Multiple file name seperated by space can be given.
+		  Multiple directory name is not permitted.
 
 
 ### Functionality:
