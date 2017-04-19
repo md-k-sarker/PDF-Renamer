@@ -6,18 +6,18 @@
 <li> Download the executable jar <a href="https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.1.0/pdfRenamer.jar" title="PDF Renamer"> pdfRenamer.jar </a> </li>
 
 <li> Run jar with the following cmd: 
-<ul>
+</ol>
 ```
 java -jar pdfRenamer.jar -flag %renameFormat path/to/your/pdf
 ```
-</ul>
-<ul>Example: 
+
+#### Example: 
 ```
 java -jar pdfRenamer.jar -d %au%is%lo%pr%pu%yr user/xxxx/testpdfs/ 
 ```
 <li> This will rename the pdfs in testpdfs directory</li>
-</ul>
-</ol>
+
+
 
 ### Details about how to run the program 
 
