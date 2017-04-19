@@ -5,8 +5,9 @@
 <ol>
 <li> Download the executable jar <a href="https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.1.0/pdfRenamer.jar" title="PDF Renamer"> pdfRenamer.jar </a> </li>
 
-<li> Run jar with the following cmd: 
+<li> Run jar with the following cmd: </li>
 </ol>
+
 ```
 java -jar pdfRenamer.jar -flag %renameFormat path/to/your/pdf
 ```
