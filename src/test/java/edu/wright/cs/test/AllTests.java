@@ -12,7 +12,8 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ LocationPageRangeTest.class, LocationTest.class, PageRangeTest.class, pdfRenamerTest.class })
+@SuiteClasses({ LocationPageRangeTest.class, LocationTest.class, PageRangeTest.class, pdfRenamerTest.class,
+		PublisherYearTest.class, TestAuthorIssue.class })
 public class AllTests {
 
 }

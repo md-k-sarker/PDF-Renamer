@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import edu.wright.cs.AuthorIssue;
@@ -14,16 +15,15 @@ public class TestAuthorIssue {
 
 	private static  String pdfName = "/target/test-classes/JUnitTestPDF/00895976.pdf";
 	private static  String invalidFileName = "/target/test-classes/JUnitTestPDF/1603.02754.pdf";
-	private File pdf;
-	private File invalidFile;
+	private static File pdf;
+	private static File invalidFile;
 	private static String expectedAuthors = null;
 	private static String expectedIssueNo = null;
 	private static String NOT_APPLICABLE=null;
 
-	@Before
-	public void runBeforeTestMethods() {
-		ClassLoader classLoader = getClass().getClassLoader();
-		
+	@BeforeClass
+	public static void  runBeforeTestMethods() {
+
 		//updated 
 		String runningDir = System.getProperty("user.dir");
 		pdfName = runningDir + pdfName;
