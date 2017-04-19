@@ -124,6 +124,7 @@ public class Rename {
 				filename += " ";
 				break;
 			default:
+				if(filename.trim().length()>0)
 				filename += str;
 			}
 		}
