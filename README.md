@@ -16,7 +16,7 @@ java -jar pdfRenamer.jar -flag %renameFormat path/to/your/pdf
 ```
 java -jar pdfRenamer.jar -d %au%is%lo%pr%pu%yr user/xxxx/testpdfs/ 
 ```
-<li> This will rename the pdfs in testpdfs directory</li>
+This will rename the pdfs in testpdfs directory
 
 
 
