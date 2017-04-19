@@ -85,11 +85,10 @@ public class Rename {
 	}
 
 	protected void renameFile() {
-		System.out.println(format);
+		System.out.println("Rename format: "+format);
 		String[] renameFormat = format.split("%");
 		String filename = "";
 		for (String str : renameFormat) {
-			System.out.println(str);
 			switch (str) {
 			case "au":
 				if (!Author.toString().equals("N/A"))
