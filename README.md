@@ -9,11 +9,16 @@
 <ul>
 <li>java -jar pdfRenamer.jar -flag %renameFormat path/to/your/pdf </li>
 </ul>
+<ul>Example: 
+<li>java -jar pdfRenamer.jar -d %au%is%lo%pr%pu%yr user/xxxx/testpdfs/ </li>
+<li> This will rename the pdfs in testpdfs directory</li>
+</ul>
 </ol>
 
-###Details about how to run the program 
+### Details about how to run the program 
 
-####Commands:  pdfRenamer -flag renameFormat Name
+#### Command:  
+#### pdfRenamer -flag renameFormat Name
 
 <ul>-flag: indicates file or directory.
 <li> -f: indicates file </li>
