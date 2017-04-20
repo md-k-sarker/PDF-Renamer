@@ -4,6 +4,7 @@
 
 <ol>
 <li> Download the executable jar <a href="https://github.com/md-k-sarker/PDF-Renamer/releases/download/v1.1.0/pdfRenamer.jar" title="PDF Renamer"> pdfRenamer.jar </a> </li>
+<li> Use these pdf's to test the functionality <a href="https://github.com/md-k-sarker/PDF-Renamer/tree/master/testdocuments/AcceptanceTest" title="PDF Files"> PDF files </a> </li>
 
 <li> Run jar with the following cmd: </li>
 </ol>
